@@ -29,6 +29,14 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/fonts"
               }
             ],
             "styles": [
@@ -88,6 +96,14 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/fonts"
               }
             ],
             "styles": [
@@ -98,5 +114,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
