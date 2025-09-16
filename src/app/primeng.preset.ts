@@ -58,7 +58,6 @@ export const MyPreset = definePreset(Aura, {
           inverseColor: '{zinc.950}',
           hoverColor: 'var(--primary-color)',
           activeColor: 'var(--primary-color)',
-
         },
 
         highlight: {
@@ -70,6 +69,7 @@ export const MyPreset = definePreset(Aura, {
         formField: {
           borderColor: 'var(--primary-color)',
           focusBorderColor: 'var(--primary-color)',
+          borderRadius: '8px',
         },
         input: {
           borderColor: 'var(--primary-color)',

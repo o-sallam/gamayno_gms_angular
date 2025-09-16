@@ -1,0 +1,20 @@
+<div class="custom-input">
+  @if (label()) {
+  <label>{{ label() }}</label>
+  }
+
+  <input
+    pInputText
+    [type]="type()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [value]="value()"
+    (input)="onInput($any($event.target).value)"
+    (blur)="onBlur()"
+    [class]="inputClass()"
+    class="w-full"
+  />
+  @if (control?.invalid && (control?.touched || control?.dirty)) {
+  <div class="p-error">{{ getErrorMessage() }}</div>
+  }
+</div>

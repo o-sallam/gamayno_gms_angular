@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CheckboxModule } from 'primeng/checkbox';
-import { Button } from "./shared/components/button/button";
+import { Button } from './shared/components/button/button';
+import { TextInputComponent } from "./shared/components/text-input/text-input";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CheckboxModule, Button],
+  imports: [RouterOutlet, CheckboxModule, Button, TextInputComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
