@@ -1,0 +1,11 @@
+<p-button
+  [icon]="icon()"
+  [disabled]="disabled()"
+  [loading]="loading()"
+  [type]="type()"
+  [rounded]="rounded()"
+  [outlined]="outlined()"
+  (onClick)="handleClick($event)"
+>
+  <ng-content></ng-content>
+</p-button>
