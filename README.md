@@ -1,5 +1,77 @@
 # GamaynoGmsAngular
 
+## App Folder Structure (2025 Refactor)
+
+The `src/app` folder is organized into a scalable, maintainable structure:
+
+```
+app
+ ├─ core
+ │   ├─ services/
+ │   │   ├─ members.service.ts        # CRUD for members + balance
+ │   │   ├─ subscriptions.service.ts  # new, renew, cancel subscription
+ │   │   ├─ cash.service.ts           # transactions, balance, reports
+ │   │   └─ api.interceptor.ts        # attach base URL, handle errors
+ │   │
+ │   ├─ guards/
+ │   │   └─ auth.guard.ts
+ │   │
+ │   ├─ models/
+ │   │   ├─ member.model.ts           # {id, name, balance, debt, ...}
+ │   │   ├─ subscription.model.ts     # {id, memberId, type, status, ...}
+ │   │   ├─ cash-transaction.model.ts # {id, type, amount, memberId, ...}
+ │   │   └─ balance.model.ts          # {memberId, credit, debit}
+ │   │
+ │   └─ layout/
+ │       ├─ navbar.component.ts
+ │       ├─ sidebar.component.ts
+ │       └─ layout.component.ts
+ │
+ ├─ shared
+ │   ├─ components/
+ │   │   ├─ card.component.ts
+ │   │   ├─ table.component.ts
+ │   │   └─ modal.component.ts
+ │   │
+ │   ├─ pipes/
+ │   │   └─ currency.pipe.ts          # format money EGP / SAR
+ │   │
+ │   └─ directives/
+ │       └─ autofocus.directive.ts
+ │
+ ├─ features
+ │   ├─ members/
+ │   │   ├─ members-list.component.ts      # GET /api/members
+ │   │   ├─ member-details.component.ts    # GET /api/members/{id}
+ │   │   ├─ member-create.component.ts     # POST /api/members
+ │   │   ├─ member-edit.component.ts       # PUT /api/members/{id}
+ │   │   ├─ member-balance.component.ts    # GET /api/members/{id}/balance
+ │   │   └─ members.routes.ts
+ │   │
+ │   ├─ subscriptions/
+ │   │   ├─ subscriptions-list.component.ts
+ │   │   ├─ subscription-details.component.ts
+ │   │   ├─ subscription-create.component.ts
+ │   │   ├─ subscription-cancel.component.ts
+ │   │   └─ subscriptions.routes.ts
+ │   │
+ │   ├─ cash/
+ │   │   ├─ cash-list.component.ts
+ │   │   ├─ cash-transaction.component.ts
+ │   │   ├─ cash-report.component.ts
+ │   │   └─ cash.routes.ts
+ │   │
+ │   └─ ... (other feature folders)
+```
+
+### Structure Purpose
+- **core/**: App-wide singletons, base services, models, guards, and layout components.
+- **shared/**: Reusable UI components, pipes, and directives used across features.
+- **features/**: Domain-specific modules and components (members, subscriptions, cash, etc.).
+
+Each folder is self-contained and focused, making the project easy to scale and maintain.
+
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.12.
 
 ## Development server
