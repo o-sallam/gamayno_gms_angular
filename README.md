@@ -189,3 +189,80 @@ This project uses [IcoMoon](https://icomoon.io/) to manage and generate custom i
 ## References
 - [IcoMoon Docs](https://icomoon.io/#docs)
 - [IcoMoon App](https://icomoon.io/app)
+
+# 🚀 HTTP Flow Documentation
+
+## 1. Create a Feature Service
+
+Every feature should have its own service (e.g. `MembersService`). This service **injects the shared** `HttpService`.
+
+```typescript
+@Injectable({ providedIn: "root" })
+export class MembersService {
+  constructor(private httpService: HttpService) {}
+  members = signal<ApiState<any[]>>({
+    loading: false,
+    data: null,
+    error: null,
+  });
+
+  getMembers(query: { page?: number; limit?: number; search?: string }) {
+    let params = new HttpParams();
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value.toString());
+      }
+    });
+
+    return this.httpService.get<Member[]>("/api/members", this.members(), {
+      params,
+    });
+  }
+}
+```
+
+## 2. Do **not** subscribe in the service
+
+#### Always **subscribe in the component** that uses the service:
+#### Use takeUntilDestroyed (Angular 16+)
+#### Angular gives you a built-in way to auto-unsubscribe when the component is destroyed:
+
+```typescript
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+export class MembersComponent {
+  private membersService = inject(MembersService);
+  this.membersService.getMembers().pipe(takeUntilDestroyed()).subscribe();
+}
+```
+
+## 3. Enable Global Loading & Error (optional)
+
+Use `HttpContext` when you want the **global spinner** or **error toast**:
+
+```typescript
+import { HttpContext } from "@angular/common/http";
+  getMembers(query: { page?: number; limit?: number; search?: string }) {
+    let params = new HttpParams();
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value.toString());
+      }
+    });
+
+    return this.httpService.get<Member[]>("/api/members", this.members(), {
+      params,
+        context: new HttpContext().set(ENABLE_LOADING, true).set(ENABLE_ERROR, true),
+
+    });
+  }
+```
+
+## ✅ Summary
+
+- Create a service → inject `HttpService`.
+- Call `.get/.post/.put/.delete` with type + endpoint (+ params).
+- Subscribe only in the component.
+- Use Angular’s `takeUntilDestroyed` to auto-unsubscribe:
+- Use `ENABLE_LOADING` and `ENABLE_ERROR` when you want global spinner + toast.
+
