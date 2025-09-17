@@ -1,0 +1,27 @@
+<p-table
+  #dt
+  [value]="data()"
+  [customSort]="true"
+  (sortFunction)="customSort($event)"
+>
+  <!-- Header -->
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let col of columns" pSortableColumn="{{ col.field }}">
+        <div class="flex items-center gap-2">
+          {{ col.header }}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+
+  <!-- Body -->
+  <ng-template pTemplate="body" let-member>
+    <tr>
+      @for (col of columns(); track $index) {
+      <td>{{ member[col.field] }}</td>
+      }
+    </tr>
+  </ng-template>
+</p-table>
