@@ -1,5 +1,9 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import { finalize, Observable, tap } from 'rxjs';
 
 export interface ApiState<T> {
@@ -17,10 +21,10 @@ export class HttpService {
 
   constructor(private http: HttpClient) {}
 
-  get<T>(url: string, state: ApiState<T>): Observable<T> {
+  get<T>(url: string, state: ApiState<T>, params?: HttpParams): Observable<T> {
     this.startLoading(state);
 
-    return this.http.get<T>(url).pipe(
+    return this.http.get<T>(url, { params }).pipe(
       tap({
         next: (data) => this.setSuccess(state, data),
         error: (err: HttpErrorResponse) => this.setError(state, err),
@@ -29,10 +33,15 @@ export class HttpService {
     );
   }
 
-  post<T>(url: string, body: any, state: ApiState<T>): Observable<T> {
+  post<T>(
+    url: string,
+    body: any,
+    state: ApiState<T>,
+    params?: HttpParams
+  ): Observable<T> {
     this.startLoading(state);
 
-    return this.http.post<T>(url, body).pipe(
+    return this.http.post<T>(url, body, { params }).pipe(
       tap({
         next: (data) => this.setSuccess(state, data),
         error: (err: HttpErrorResponse) => this.setError(state, err),
@@ -41,10 +50,15 @@ export class HttpService {
     );
   }
 
-  put<T>(url: string, body: any, state: ApiState<T>): Observable<T> {
+  put<T>(
+    url: string,
+    body: any,
+    state: ApiState<T>,
+    params?: HttpParams
+  ): Observable<T> {
     this.startLoading(state);
 
-    return this.http.put<T>(url, body).pipe(
+    return this.http.put<T>(url, body, { params }).pipe(
       tap({
         next: (data) => this.setSuccess(state, data),
         error: (err: HttpErrorResponse) => this.setError(state, err),
