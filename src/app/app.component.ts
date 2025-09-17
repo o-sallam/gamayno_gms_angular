@@ -5,6 +5,7 @@ import { Button } from './shared/components/button/button';
 import { TextInputComponent } from './shared/components/text-input/text-input';
 import { ToastComponent } from './core/components/toast.component';
 import { SpinnerComponent } from './core/components/spinner.component';
+import { Members } from './features/members/pages/members/members';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ import { SpinnerComponent } from './core/components/spinner.component';
     TextInputComponent,
     ToastComponent,
     SpinnerComponent,
+    Members,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
