@@ -230,9 +230,11 @@ export class MembersService {
 ```typescript
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-export class MembersComponent {
+export class MembersComponent implements OnInit{
   private membersService = inject(MembersService);
+  ngOnInit(): void {
   this.membersService.getMembers().pipe(takeUntilDestroyed()).subscribe();
+  }
 }
 ```
 
