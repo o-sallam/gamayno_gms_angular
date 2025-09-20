@@ -1,7 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { MembersService } from '../../services/members.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TableComponent } from '../../../../shared/components/table/table';
+import {
+  TableComponent,
+  TableFilterBody,
+} from '../../../../shared/components/table/table';
 
 @Component({
   selector: 'app-members',
@@ -11,6 +14,8 @@ import { TableComponent } from '../../../../shared/components/table/table';
 })
 export class Members implements OnInit {
   membersService = inject(MembersService);
+  private destroyRef = inject(DestroyRef); // 👈 add this
+
   columns = [
     { field: 'id', header: 'ID' },
     { field: 'code', header: 'Code' },
@@ -22,6 +27,12 @@ export class Members implements OnInit {
     { field: 'phone', header: 'Phone' },
   ];
   ngOnInit(): void {
-    // this.membersService.getAll().pipe(takeUntilDestroyed()).subscribe();
+    this.fetch();
+  }
+  fetch(filterBody?: TableFilterBody) {
+    this.membersService
+      .getAll(filterBody)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 }

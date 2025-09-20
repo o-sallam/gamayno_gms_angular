@@ -1,18 +1,41 @@
 <p-table
   #dt
   [value]="data()"
-  [customSort]="true"
-  (sortFunction)="customSort($event)"
+  [lazy]="true"
+  [rows]="10"
+  [totalRecords]="totalRecords()"
+  [loading]="loading"
+  [virtualScroll]="true"
+  scrollHeight="500px"
+  [virtualScrollItemSize]="50"  
+  (onLazyLoad)="lazyLoad($event)"
 >
   <!-- Header -->
   <ng-template pTemplate="header">
+    <!-- Column Names -->
     <tr>
-      <th *ngFor="let col of columns" pSortableColumn="{{ col.field }}">
+      @for (col of columns(); track $index) {
+      <th [pSortableColumn]="col.field">
         <div class="flex items-center gap-2">
           {{ col.header }}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </div>
       </th>
+      }
+    </tr>
+    <!-- Column Filters -->
+    <tr>
+      @for (col of columns(); track $index) {
+      <th>
+        <input
+          pInputText
+          type="text"
+          class="p-inputtext p-column-filter"
+          placeholder="Type to search"
+          (input)="onFilterBySearch($event, col.field)"
+        />
+      </th>
+      }
     </tr>
   </ng-template>
 
