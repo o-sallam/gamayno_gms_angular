@@ -15,8 +15,8 @@ import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-text-input',
-  templateUrl: './text-input.html',
-  styleUrls: ['./text-input.scss'],
+  templateUrl: './text-input.component.html',
+  styleUrls: ['./text-input.component.scss'],
   imports: [InputTextModule],
   providers: [
     {

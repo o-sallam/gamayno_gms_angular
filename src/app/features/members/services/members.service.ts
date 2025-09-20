@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Member } from '../models/member.model';
 import { ApiState, HttpService } from '../../../core/services/http.service';
-import { TableFilterBody } from '../../../shared/components/table/table';
+import { TableFilterBody } from '../../../shared/components/table/table.component';
 import { HttpParams } from '@angular/common/http';
 import { ParamatersParser } from '../../../core/config/paramaters-parser';
 

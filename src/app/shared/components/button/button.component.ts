@@ -4,8 +4,8 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-button',
   imports: [ButtonModule],
-  templateUrl: './button.html',
-  styleUrl: './button.scss',
+  templateUrl: './button.component.html',
+  styleUrl: './button.component.scss',
 })
 export class Button {
   icon = input('');

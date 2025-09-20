@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { TableFilterBody } from '../../shared/components/table/table';
+import { TableFilterBody } from '../../shared/components/table/table.component';
 
 export class ParamatersParser {
   static parseTableFilter(filterBody?: TableFilterBody): HttpParams {

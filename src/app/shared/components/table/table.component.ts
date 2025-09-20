@@ -9,7 +9,7 @@ export interface TableFilterBody {
 }
 @Component({
   selector: 'app-table',
-  templateUrl: './table.html',
+  templateUrl: './table.component.html',
   imports: [TableModule, InputTextModule],
 })
 export class TableComponent {

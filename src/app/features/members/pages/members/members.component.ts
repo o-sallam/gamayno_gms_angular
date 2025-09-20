@@ -4,13 +4,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   TableComponent,
   TableFilterBody,
-} from '../../../../shared/components/table/table';
+} from '../../../../shared/components/table/table.component';
 
 @Component({
   selector: 'app-members',
   imports: [TableComponent],
-  templateUrl: './members.html',
-  styleUrl: './members.scss',
+  templateUrl: './members.component.html',
+  styleUrl: './members.component.scss',
 })
 export class Members implements OnInit {
   membersService = inject(MembersService);
