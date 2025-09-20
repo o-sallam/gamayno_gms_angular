@@ -214,15 +214,15 @@ export class MembersService {
     },
   ];
 
-  members = signal<ApiState<Member[]>>({
+  membersState = signal<ApiState<Member[]>>({
     loading: false,
-    data: this.MOCK_MEMBERS,
+    response: this.MOCK_MEMBERS,
     error: null,
   });
 
-  member = signal<ApiState<Member>>({
+  memberState = signal<ApiState<Member>>({
     loading: false,
-    data: null,
+    response: null,
     error: null,
   });
 
@@ -231,22 +231,22 @@ export class MembersService {
   getAll(filterBody?: TableFilterBody): Observable<Member[]> {
     const params = ParamatersParser.parseTableFilter(filterBody);
 
-    return this.http.get<Member[]>('/api/members', this.members(), { params });
+    return this.http.get<Member[]>('/api/members', this.membersState(), { params });
   }
 
   getById(id: number): Observable<Member> {
-    return this.http.get<Member>(`/api/members/${id}`, this.member());
+    return this.http.get<Member>(`/api/members/${id}`, this.memberState());
   }
 
   create(member: Partial<Member>): Observable<Member> {
-    return this.http.post<Member>('/api/members', member, this.member());
+    return this.http.post<Member>('/api/members', member, this.memberState());
   }
 
   update(id: number, member: Partial<Member>): Observable<Member> {
-    return this.http.put<Member>(`/api/members/${id}`, member, this.member());
+    return this.http.put<Member>(`/api/members/${id}`, member, this.memberState());
   }
 
   delete(id: number): Observable<any> {
-    return this.http.delete<any>(`/api/members/${id}`, this.member());
+    return this.http.delete<any>(`/api/members/${id}`, this.memberState());
   }
 }

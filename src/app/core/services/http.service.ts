@@ -9,7 +9,7 @@ import { finalize, Observable, tap } from 'rxjs';
 
 export interface ApiState<T> {
   loading: boolean;
-  data: T | null;
+  response: T | null;
   error: string | null;
 }
 interface HttpOptions {
@@ -111,13 +111,13 @@ export class HttpService {
 
   private setSuccess<T>(state: ApiState<T>, data: T) {
     state.loading = false;
-    state.data = data;
+    state.response = data;
     state.error = null;
   }
 
   private setError<T>(state: ApiState<T>, err: HttpErrorResponse) {
     state.loading = false;
-    state.data = null;
+    state.response = null;
     state.error = err.message || 'Something went wrong';
   }
 }

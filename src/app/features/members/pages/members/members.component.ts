@@ -5,10 +5,12 @@ import {
   TableComponent,
   TableFilterBody,
 } from '../../../../shared/components/table/table.component';
+import { Button } from "../../../../shared/components/button/button.component";
+
 
 @Component({
   selector: 'app-members',
-  imports: [TableComponent],
+  imports: [TableComponent, Button],
   templateUrl: './members.component.html',
   styleUrl: './members.component.scss',
 })
