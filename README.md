@@ -200,16 +200,16 @@ Every feature should have its own service (e.g. `MembersService`). This service 
 @Injectable({ providedIn: "root" })
 export class MembersService {
   constructor(private httpService: HttpService) {}
-  members = signal<ApiState<any[]>>({
+   membersState = signal<ApiState<Member[]>>({
     loading: false,
-    data: null,
+    response: null,
     error: null,
   });
 
   getMembers(query: { page?: number; limit?: number; search?: string }) {
    const params = ParamatersParser.parseTableFilter(filterBody);
 
-    return this.http.get<Member[]>('/api/members', this.members(), { params });
+    return this.http.get<Member[]>('/api/members', this.membersState(), { params });
   }
 }
 ```
@@ -250,7 +250,7 @@ import { HttpContext } from "@angular/common/http";
   getMembers(query: { page?: number; limit?: number; search?: string }) {
    const params = ParamatersParser.parseTableFilter(filterBody);
 
-    return this.http.get<Member[]>('/api/members', this.members(), {
+    return this.http.get<Member[]>('/api/members', this.membersState(), {
       params,
       context: new HttpContext()
         .set(ENABLE_LOADING, true)
