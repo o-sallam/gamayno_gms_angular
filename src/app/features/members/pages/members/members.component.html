@@ -1,4 +1,6 @@
 <app-table
   [columns]="columns"
   [data]="membersService.members().data!"
+  [totalRecords]="1000"
+  (fetch)="fetch($event)"
 ></app-table>

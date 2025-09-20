@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import {
   HttpClient,
+  HttpContext,
   HttpErrorResponse,
   HttpParams,
 } from '@angular/common/http';
@@ -11,7 +12,16 @@ export interface ApiState<T> {
   data: T | null;
   error: string | null;
 }
+interface HttpOptions {
+  params?:
+    | HttpParams
+    | Record<
+        string,
+        string | number | boolean | ReadonlyArray<string | number | boolean>
+      >;
 
+  context?: HttpContext;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -21,50 +31,63 @@ export class HttpService {
 
   constructor(private http: HttpClient) {}
 
-  get<T>(url: string, state: ApiState<T>, params?: HttpParams): Observable<T> {
+  get<T>(
+    url: string,
+    state: ApiState<T>,
+    options?: HttpOptions
+  ): Observable<T> {
     this.startLoading(state);
 
-    return this.http.get<T>(url, { params }).pipe(
-      tap({
-        next: (data) => this.setSuccess(state, data),
-        error: (err: HttpErrorResponse) => this.setError(state, err),
-      }),
-      finalize(() => this.loading.set(false))
-    );
+    return this.http
+      .get<T>(url, { params: options?.params, context: options?.context })
+      .pipe(
+        tap({
+          next: (data) => this.setSuccess(state, data),
+          error: (err: HttpErrorResponse) => this.setError(state, err),
+        }),
+        finalize(() => this.loading.set(false))
+      );
   }
 
   post<T>(
     url: string,
     body: any,
     state: ApiState<T>,
-    params?: HttpParams
+    options?: HttpOptions
   ): Observable<T> {
     this.startLoading(state);
 
-    return this.http.post<T>(url, body, { params }).pipe(
-      tap({
-        next: (data) => this.setSuccess(state, data),
-        error: (err: HttpErrorResponse) => this.setError(state, err),
-      }),
-      finalize(() => this.loading.set(false))
-    );
+    return this.http
+      .post<T>(url, body, {
+        params: options?.params,
+        context: options?.context,
+      })
+      .pipe(
+        tap({
+          next: (data) => this.setSuccess(state, data),
+          error: (err: HttpErrorResponse) => this.setError(state, err),
+        }),
+        finalize(() => this.loading.set(false))
+      );
   }
 
   put<T>(
     url: string,
     body: any,
     state: ApiState<T>,
-    params?: HttpParams
+    options?: HttpOptions
   ): Observable<T> {
     this.startLoading(state);
 
-    return this.http.put<T>(url, body, { params }).pipe(
-      tap({
-        next: (data) => this.setSuccess(state, data),
-        error: (err: HttpErrorResponse) => this.setError(state, err),
-      }),
-      finalize(() => this.loading.set(false))
-    );
+    return this.http
+      .put<T>(url, body, { params: options?.params, context: options?.context })
+      .pipe(
+        tap({
+          next: (data) => this.setSuccess(state, data),
+          error: (err: HttpErrorResponse) => this.setError(state, err),
+        }),
+        finalize(() => this.loading.set(false))
+      );
   }
 
   delete<T>(url: string, state: ApiState<T>): Observable<T> {

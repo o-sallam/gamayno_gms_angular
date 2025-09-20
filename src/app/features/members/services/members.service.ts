@@ -2,6 +2,9 @@ import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Member } from '../models/member.model';
 import { ApiState, HttpService } from '../../../core/services/http.service';
+import { TableFilterBody } from '../../../shared/components/table/table.component';
+import { HttpParams } from '@angular/common/http';
+import { ParamatersParser } from '../../../core/config/paramaters-parser';
 
 @Injectable({
   providedIn: 'root',
@@ -225,8 +228,10 @@ export class MembersService {
 
   constructor(private http: HttpService) {}
 
-  getAll(): Observable<Member[]> {
-    return this.http.get<Member[]>('/api/members', this.members());
+  getAll(filterBody?: TableFilterBody): Observable<Member[]> {
+    const params = ParamatersParser.parseTableFilter(filterBody);
+
+    return this.http.get<Member[]>('/api/members', this.members(), { params });
   }
 
   getById(id: number): Observable<Member> {
