@@ -207,16 +207,9 @@ export class MembersService {
   });
 
   getMembers(query: { page?: number; limit?: number; search?: string }) {
-    let params = new HttpParams();
-    Object.entries(query).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        params = params.set(key, value.toString());
-      }
-    });
+   const params = ParamatersParser.parseTableFilter(filterBody);
 
-    return this.httpService.get<Member[]>("/api/members", this.members(), {
-      params,
-    });
+    return this.http.get<Member[]>('/api/members', this.members(), { params });
   }
 }
 ```
@@ -224,16 +217,26 @@ export class MembersService {
 ## 2. Do **not** subscribe in the service
 
 #### Always **subscribe in the component** that uses the service:
-#### Use takeUntilDestroyed (Angular 16+)
+#### Use `takeUntilDestroyed` (Angular 16+)
 #### Angular gives you a built-in way to auto-unsubscribe when the component is destroyed:
+#### `takeUntilDestroyed()` needs to run inside Angular’s injection context (constructor, field initializer, or with `DestroyRef`).
+#### You must use `(DestroyRef)` with a normal method `(fetch)`, because Angular doesn’t know which injection context to bind it to.
 
 ```typescript
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export class MembersComponent implements OnInit{
+  private destroyRef = inject(DestroyRef); // 👈 add this
   private membersService = inject(MembersService);
+
   ngOnInit(): void {
-  this.membersService.getMembers().pipe(takeUntilDestroyed()).subscribe();
+    this.fetch();
+  }
+  fetch(filterBody?: TableFilterBody) {
+    this.membersService
+      .getAll(filterBody)
+      .pipe(takeUntilDestroyed(this.destroyRef)) // 👈 pass DestroyRef
+      .subscribe();
   }
 }
 ```
@@ -245,18 +248,13 @@ Use `HttpContext` when you want the **global spinner** or **error toast**:
 ```typescript
 import { HttpContext } from "@angular/common/http";
   getMembers(query: { page?: number; limit?: number; search?: string }) {
-    let params = new HttpParams();
-    Object.entries(query).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        params = params.set(key, value.toString());
-      }
-    });
+   const params = ParamatersParser.parseTableFilter(filterBody);
 
-    return this.httpService.get<Member[]>("/api/members", this.members(), {
+    return this.http.get<Member[]>('/api/members', this.members(), {
       params,
-        context: new HttpContext().set(ENABLE_LOADING, true).set(ENABLE_ERROR, true),
-
-    });
+      context: new HttpContext()
+        .set(ENABLE_LOADING, true)
+        .set(ENABLE_ERROR, true),
   }
 ```
 
