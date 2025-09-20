@@ -122,8 +122,11 @@ export class TableComponent {
   lazyLoad(event: TableLazyLoadEvent) {
     // Triggered when scrolling or sorting or filtering
     // this.loading = true;
+    if (event.first == 0) {
+      // prevent triggering on first load (first rendering)
+      return;
+    }
     this.fetchMore(event);
-    console.log('filterBody', this.filterBody);
   }
   emitData() {
     this.fetch.emit(this.filterBody);

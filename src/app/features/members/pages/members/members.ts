@@ -14,7 +14,7 @@ import {
 })
 export class Members implements OnInit {
   membersService = inject(MembersService);
-  private destroyRef = inject(DestroyRef); // 👈 add this
+  private destroyRef = inject(DestroyRef);
 
   columns = [
     { field: 'id', header: 'ID' },
@@ -27,7 +27,7 @@ export class Members implements OnInit {
     { field: 'phone', header: 'Phone' },
   ];
   ngOnInit(): void {
-    this.fetch();
+    // this.fetch();
   }
   fetch(filterBody?: TableFilterBody) {
     this.membersService
