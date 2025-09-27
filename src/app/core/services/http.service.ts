@@ -7,12 +7,14 @@ import {
 } from '@angular/common/http';
 import { finalize, Observable, tap } from 'rxjs';
 import { ApiState, HttpOptions } from '../models/http-models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HttpService {
-  // global loading signal (for global spinner if needed)
+  private readonly BASE_URL = environment.apiUrl;
+
   globalLoading = signal(false);
 
   constructor(private http: HttpClient) {}
@@ -25,7 +27,10 @@ export class HttpService {
     this.startLoading(state);
 
     return this.http
-      .get<T>(url, { params: options?.params, context: options?.context })
+      .get<T>(`${this.BASE_URL}${url}`, {
+        params: options?.params,
+        context: options?.context,
+      })
       .pipe(
         tap({
           next: (data) => this.setSuccess(data, state),
@@ -44,7 +49,7 @@ export class HttpService {
     this.startLoading(state);
 
     return this.http
-      .post<T>(url, body, {
+      .post<T>(`${this.BASE_URL}${url}`, body, {
         params: options?.params,
         context: options?.context,
       })
@@ -66,7 +71,10 @@ export class HttpService {
     this.startLoading(state);
 
     return this.http
-      .put<T>(url, body, { params: options?.params, context: options?.context })
+      .put<T>(`${this.BASE_URL}${url}`, body, {
+        params: options?.params,
+        context: options?.context,
+      })
       .pipe(
         tap({
           next: (data) => this.setSuccess(data, state),
@@ -79,7 +87,7 @@ export class HttpService {
   delete<T>(url: string, state?: ApiState<T>): Observable<T> {
     this.startLoading(state);
 
-    return this.http.delete<T>(url).pipe(
+    return this.http.delete<T>(`${this.BASE_URL}${url}`).pipe(
       tap({
         next: (data) => this.setSuccess(data, state),
         error: (err: HttpErrorResponse) => this.setError(err, state),
@@ -87,7 +95,6 @@ export class HttpService {
       finalize(() => this.globalLoading.set(false))
     );
   }
-
   // helpers
   private startLoading<T>(state?: ApiState<T>) {
     this.globalLoading.set(true);
