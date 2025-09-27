@@ -1,0 +1,16 @@
+<label class="block text-sm font-medium text-gray-500 mb-1">
+  {{ label() }}
+</label>
+
+@switch (type()) { @case ('text') {
+<div class="p-2">{{ value() }}</div>
+} @case ('tag') {
+<p-tag
+  [value]="value()"
+  [severity]="severity() ?? (value() === 'active' ? 'success' : 'danger')"
+></p-tag>
+} @case ('custom') {
+<ng-content></ng-content>
+} @default {
+<span class="text-gray-400">Unknown field type</span>
+} }

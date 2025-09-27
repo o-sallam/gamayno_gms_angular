@@ -7,4 +7,5 @@ export interface Member {
   credit: number;
   address?: string;
   phone?: string;
+  status?: string;
 }

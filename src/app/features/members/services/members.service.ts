@@ -1,17 +1,19 @@
 import { Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Member } from '../models/member.model';
-import { ApiState, HttpService } from '../../../core/services/http.service';
+import { HttpService } from '../../../core/services/http.service';
 import { TableFilterBody } from '../../../shared/components/table/table.component';
-import { HttpParams } from '@angular/common/http';
 import { ParamatersParser } from '../../../core/config/paramaters-parser';
-
+import { ApiResponse, ApiState } from '../../../core/models/http-models';
+type RowData = Member;
+type PartialRowData = Partial<RowData>;
 @Injectable({
   providedIn: 'root',
 })
 export class MembersService {
   // signals for state management
-  private MOCK_MEMBERS: Member[] = [
+
+  private MOCK_MEMBERS: RowData[] = [
     {
       id: 1,
       code: 'M001',
@@ -21,6 +23,7 @@ export class MembersService {
       credit: 308.08,
       address: 'Los Angeles',
       phone: '+1-555-9134',
+      status: 'active',
     },
     {
       id: 2,
@@ -31,6 +34,7 @@ export class MembersService {
       credit: 2357.74,
       address: 'Dallas',
       phone: '+1-555-6977',
+      status: 'active',
     },
     {
       id: 3,
@@ -41,6 +45,7 @@ export class MembersService {
       credit: 465.79,
       address: 'Philadelphia',
       phone: '+1-555-3140',
+      status: 'inactive',
     },
     {
       id: 4,
@@ -51,6 +56,7 @@ export class MembersService {
       credit: 3422.37,
       address: 'Philadelphia',
       phone: '+1-555-2025',
+      status: 'inactive',
     },
     {
       id: 5,
@@ -61,6 +67,7 @@ export class MembersService {
       credit: 3800.01,
       address: 'Los Angeles',
       phone: '+1-555-1155',
+      status: 'inactive',
     },
     {
       id: 6,
@@ -71,6 +78,7 @@ export class MembersService {
       credit: 2504.32,
       address: 'Houston',
       phone: '+1-555-6432',
+      status: 'active',
     },
     {
       id: 7,
@@ -81,6 +89,7 @@ export class MembersService {
       credit: 3867.4,
       address: 'Phoenix',
       phone: '+1-555-4332',
+      status: 'active',
     },
     {
       id: 8,
@@ -91,6 +100,7 @@ export class MembersService {
       credit: 571.92,
       address: 'San Diego',
       phone: '+1-555-3815',
+      status: 'active',
     },
     {
       id: 9,
@@ -101,6 +111,7 @@ export class MembersService {
       credit: 5278.88,
       address: 'Los Angeles',
       phone: '+1-555-9723',
+      status: 'active',
     },
     {
       id: 10,
@@ -214,13 +225,13 @@ export class MembersService {
     },
   ];
 
-  membersState = signal<ApiState<Member[]>>({
+  membersState = signal<ApiState<ApiResponse<RowData[]>>>({
     loading: false,
-    response: this.MOCK_MEMBERS,
+    response: { data: this.MOCK_MEMBERS },
     error: null,
   });
 
-  memberState = signal<ApiState<Member>>({
+  memberState = signal<ApiState<ApiResponse<RowData>>>({
     loading: false,
     response: null,
     error: null,
@@ -228,25 +239,34 @@ export class MembersService {
 
   constructor(private http: HttpService) {}
 
-  getAll(filterBody?: TableFilterBody): Observable<Member[]> {
+  getAll(filterBody?: TableFilterBody): Observable<ApiResponse<RowData[]>> {
     const params = ParamatersParser.parseTableFilter(filterBody);
 
-    return this.http.get<Member[]>('/api/members', this.membersState(), { params });
+    return this.http.get<ApiResponse<RowData[]>>(
+      '/api/members',
+      this.membersState(),
+      {
+        params,
+      }
+    );
   }
 
-  getById(id: number): Observable<Member> {
-    return this.http.get<Member>(`/api/members/${id}`, this.memberState());
+  getById(id: number): Observable<ApiResponse<RowData>> {
+    return this.http.get<ApiResponse<RowData>>(
+      `/api/members/${id}`,
+      this.memberState()
+    );
   }
 
-  create(member: Partial<Member>): Observable<Member> {
-    return this.http.post<Member>('/api/members', member, this.memberState());
+  create(member: PartialRowData): Observable<ApiResponse<RowData>> {
+    return this.http.post<ApiResponse<RowData>>('/api/members', member);
   }
 
-  update(id: number, member: Partial<Member>): Observable<Member> {
-    return this.http.put<Member>(`/api/members/${id}`, member, this.memberState());
+  update(id: number, member: PartialRowData): Observable<ApiResponse<RowData>> {
+    return this.http.put<ApiResponse<RowData>>(`/api/members/${id}`, member);
   }
 
   delete(id: number): Observable<any> {
-    return this.http.delete<any>(`/api/members/${id}`, this.memberState());
+    return this.http.delete<any>(`/api/members/${id}`);
   }
 }

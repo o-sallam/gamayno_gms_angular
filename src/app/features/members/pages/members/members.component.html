@@ -1,10 +1,43 @@
-<app-button>
-  <i class="icon icon-user-tie"></i>
-  <span>Add Member</span></app-button
->
-<app-table
-  [columns]="columns"
-  [data]="membersService.members().data!"
-  [totalRecords]="1000"
-  (fetch)="fetch($event)"
-></app-table>
+<div class="p-2">
+  <header class="flex justify-end mb-4">
+    <app-button (onClick)="openDialog('add')">
+      <i class="icon icon-user-tie"></i>
+      <span>Add Member</span></app-button
+    >
+  </header>
+  <section>
+    <app-table
+      [columns]="columns"
+      [data]="data"
+      [totalRecords]="1000"
+      (fetch)="fetch($event)"
+      (delete)="openDialog('delete', $event)"
+      (update)="openDialog('update', $event)"
+      (details)="openDialog('details', $event)"
+      [hasDelete]="true"
+      [hasUpdate]="true"
+      [hasDetails]="true"
+    >
+      <!-- Custom cell for "status" -->
+      <ng-template cellTemplate="status" let-value let-row="row">
+        <td>
+          <!-- 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' -->
+          <p-tag
+            [value]="value"
+            [severity]="value === 'active' ? 'success' : 'danger'"
+          ></p-tag>
+        </td>
+      </ng-template>
+      <!-- Custom cell for "actions" -->
+      <!-- <ng-template cellTemplate="actions" let-row>
+        <td>
+         
+        </td>
+      </ng-template> -->
+    </app-table>
+  </section>
+</div>
+<app-add-update-delete-members-dialog
+  [dialogConfig]="dialogConfig()"
+  (confirmDialogChange)="handleConfirmDialog($event)"
+></app-add-update-delete-members-dialog>

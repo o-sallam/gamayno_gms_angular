@@ -12,7 +12,7 @@
 >
   <!-- Header -->
   <ng-template pTemplate="header">
-    <!-- Column Names -->
+    <!-- Row Names -->
     <tr>
       @for (col of columns(); track $index) {
       <th [pSortableColumn]="col.field">
@@ -22,8 +22,12 @@
         </div>
       </th>
       }
+      <!-- actions column -->
+      @if (hasDelete() || hasUpdate() || hasDetails() || getActionsTemplate()) {
+      <th></th>
+      }
     </tr>
-    <!-- Column Filters -->
+    <!-- Row Filters -->
     <tr>
       @for (col of columns(); track $index) {
       <th>
@@ -33,18 +37,63 @@
           class="p-inputtext p-column-filter"
           placeholder="Type to search"
           (input)="onFilterBySearch($event, col.field)"
+          [style]="{ width: '100%' }"
         />
       </th>
+      }
+      <!-- actions column -->
+      @if (hasDelete() || hasUpdate() || hasDetails() || getActionsTemplate()) {
+      <th></th>
       }
     </tr>
   </ng-template>
 
-  <!-- Body -->
-  <ng-template pTemplate="body" let-member>
+  <!-- Body with content projection -->
+  <ng-template pTemplate="body" let-row>
     <tr>
-      @for (col of columns(); track $index) {
-      <td>{{ member[col.field] }}</td>
+      @for (col of columns(); track trackByField($index, col)) {
+      <ng-container
+        [ngTemplateOutlet]="getTemplate(col.field) || defaultTemplate"
+        [ngTemplateOutletContext]="{ $implicit: row[col.field], row: row }"
+      ></ng-container>
       }
+      <!-- actions column -->
+      <ng-container
+        [ngTemplateOutlet]="getActionsTemplate() || defaultActionsTemplate"
+        [ngTemplateOutletContext]="{ $implicit: row }"
+      ></ng-container>
     </tr>
   </ng-template>
 </p-table>
+<!-- default cell template -->
+<ng-template #defaultTemplate let-value>
+  <td>{{ value }}</td>
+</ng-template>
+<ng-template #defaultActionsTemplate let-value>
+  <!-- update cell template -->
+
+  <!-- delete cell template -->
+  @if (hasDelete() || hasUpdate() || hasDetails()) {
+  <td class="flex gap-2">
+    @if (hasDetails()) {
+    <i
+      (click)="onDetails(value)"
+      class="icon icon-user-tie cursor-pointer text-2xl hover:text-[var(--primary-color)] duration-300 ease-in-out"
+      title="View Details"
+    ></i>
+    } @if (hasUpdate()) {
+    <i
+      (click)="onUpdate(value)"
+      class="icon icon-user-tie cursor-pointer text-2xl hover:text-[var(--primary-color)] duration-300 ease-in-out"
+      title="Edit"
+    ></i>
+    } @if (hasDelete()) {
+    <i
+      (click)="onDelete(value)"
+      class="icon icon-user-tie cursor-pointer text-2xl hover:text-[var(--primary-color)] duration-300 ease-in-out"
+      title="Delete"
+    ></i>
+    }
+  </td>
+  }
+</ng-template>
