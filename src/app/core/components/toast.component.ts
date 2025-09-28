@@ -1,5 +1,5 @@
 import { Component, effect } from '@angular/core';
-import { ErrorService } from '../services/error.service';
+import { MessageService } from '../services/message.service';
 
 @Component({
   selector: 'app-toast',
@@ -35,7 +35,7 @@ export class ToastComponent {
   visible = false;
   private timeoutId?: any;
 
-  constructor(private errorService: ErrorService) {
+  constructor(private errorService: MessageService) {
     effect(() => {
       const err = this.errorService.error();
       if (err) {

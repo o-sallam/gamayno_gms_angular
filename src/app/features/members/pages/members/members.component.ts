@@ -60,7 +60,7 @@ export class Members implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.fetch();
+    this.fetch();
   }
   fetch(filterBody?: TableFilterBody) {
     this.membersService
