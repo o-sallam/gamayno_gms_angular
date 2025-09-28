@@ -245,7 +245,7 @@ export class MembersService {
     const params = ParamatersParser.parseTableFilter(filterBody);
 
     return this.http.get<ApiResponse<RowData[]>>(
-      '/api/members',
+      'members',
       this.membersState(),
       {
         params,
@@ -255,25 +255,25 @@ export class MembersService {
 
   getById(id: number): Observable<ApiResponse<RowData>> {
     return this.http.get<ApiResponse<RowData>>(
-      `/api/members/${id}`,
+      `members/${id}`,
       this.memberState()
     );
   }
 
   create(member: PartialRowData): Observable<ApiResponse<RowData>> {
-    return this.http.post<ApiResponse<RowData>>('/api/members', member, {
+    return this.http.post<ApiResponse<RowData>>('members', member, {
       context: new HttpContext().set(ENABLE_SUCCESS, true),
     });
   }
 
   update(id: number, member: PartialRowData): Observable<ApiResponse<RowData>> {
-    return this.http.put<ApiResponse<RowData>>(`/api/members/${id}`, member, {
+    return this.http.put<ApiResponse<RowData>>(`members/${id}`, member, {
       context: new HttpContext().set(ENABLE_SUCCESS, true),
     });
   }
 
   delete(id: number): Observable<any> {
-    return this.http.delete<any>(`/api/members/${id}`, {
+    return this.http.delete<any>(`members/${id}`, {
       context: new HttpContext().set(ENABLE_SUCCESS, true),
     });
   }
