@@ -19,8 +19,9 @@ import { MessageService } from '../services/message.service';
     `
       .toast {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        top: 20px;
+        right: 50%;
+        transform: translateX(50%);
         padding: 12px 20px;
         border-radius: 6px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
