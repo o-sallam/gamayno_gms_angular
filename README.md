@@ -190,37 +190,157 @@ This project uses [IcoMoon](https://icomoon.io/) to manage and generate custom i
 - [IcoMoon Docs](https://icomoon.io/#docs)
 - [IcoMoon App](https://icomoon.io/app)
 
-# 🚀 HTTP Flow Documentation
+# Feature Development Guide
 
-## 1. Create a Feature Service
+This guide explains how to create a new feature (service + state management) following the project’s conventions.  
+We will use `MembersService` as a reference.
 
-Every feature should have its own service (e.g. `MembersService`). This service **injects the shared** `HttpService`.
+---
 
-```typescript
-@Injectable({ providedIn: "root" })
+## 📂 Folder Structure
+
+Each feature should live in its own module/folder under the `src/app/features` directory.
+
+Example for **Members**:
+```
+src/app/features/members/
+  ├── models/
+  │     └── member.model.ts
+  ├── services/
+  │     └── members.service.ts
+  └── pages/
+       └── members/
+       └── members-crud-dialog/
+```
+
+---
+
+## 🛠 Steps to Create a New Feature
+
+### 1. Define a Model
+Inside `models/`, create a file describing your data shape.
+
+Example `member.model.ts`:
+```ts
+export interface Member {
+  id: number;
+  code: string;
+  name: string;
+  balance: number;
+  debt: number;
+  credit: number;
+  address: string;
+  phone: string;
+  status?: string;
+}
+```
+
+---
+
+### 2. Create a Service
+Inside `services/`, create a new service file (e.g., `members.service.ts`).
+
+The service should:
+- Import `HttpService` for API communication.
+- Use **signals** to manage local state (`ApiState`).
+- Provide CRUD methods (`getAll`, `getById`, `create`, `update`, `delete`).
+
+Example:
+```ts
+@Injectable({ providedIn: 'root' })
 export class MembersService {
-  constructor(private httpService: HttpService) {}
-   membersState = signal<ApiState<Member[]>>({
+  membersState = signal<ApiState<ApiResponse<Member[]>>>({
     loading: false,
     response: null,
     error: null,
   });
 
-  getMembers(query: { page?: number; limit?: number; search?: string }) {
-   const params = ParamatersParser.parseTableFilter(filterBody);
+  memberState = signal<ApiState<ApiResponse<Member>>>({
+    loading: false,
+    response: null,
+    error: null,
+  });
 
-    return this.http.get<Member[]>('/api/members', this.membersState(), { params });
+  constructor(private http: HttpService) {}
+
+  getAll(): Observable<ApiResponse<Member[]>> {
+    return this.http.get<ApiResponse<Member[]>>('members', this.membersState());
+  }
+
+  getById(id: number): Observable<ApiResponse<Member>> {
+    return this.http.get<ApiResponse<Member>>(`members/${id}`, this.memberState());
+  }
+
+  create(member: Partial<Member>): Observable<ApiResponse<Member>> {
+    return this.http.post<ApiResponse<Member>>('members', member, {
+      context: new HttpContext().set(ENABLE_SUCCESS, true),
+    });
+  }
+
+  update(id: number, member: Partial<Member>): Observable<ApiResponse<Member>> {
+    return this.http.put<ApiResponse<Member>>(`members/${id}`, member, {
+      context: new HttpContext().set(ENABLE_SUCCESS, true),
+    });
+  }
+
+  delete(id: number): Observable<any> {
+    return this.http.delete<any>(`members/${id}`, {
+      context: new HttpContext().set(ENABLE_SUCCESS, true),
+    });
   }
 }
 ```
 
-## 2. Do **not** subscribe in the service
+---
 
-#### Always **subscribe in the component** that uses the service:
-#### Use `takeUntilDestroyed` (Angular 16+)
-#### Angular gives you a built-in way to auto-unsubscribe when the component is destroyed:
-#### `takeUntilDestroyed()` needs to run inside Angular’s injection context (constructor, field initializer, or with `DestroyRef`).
-#### You must use `(DestroyRef)` with a normal method `(fetch)`, because Angular doesn’t know which injection context to bind it to.
+### 3. Use Context Tokens
+Context tokens control interceptor behavior (loading, success messages, error handling).  
+They are declared in `core/interceptors/http-context-tokens.ts`. `ENABLE_LOADING` and `ENABLE_ERROR` are true by default
+and `ENABLE_SUCCESS` is false by default this means every time there is an http request loading will trigger and if there is an error error message will show
+and if you want to show success message you should change `ENABLE_SUCCESS` to true like in the example 
+```ts
+export const ENABLE_LOADING = new HttpContextToken<boolean>(() => true);
+export const ENABLE_ERROR = new HttpContextToken<boolean>(() => true);
+export const ENABLE_SUCCESS = new HttpContextToken<boolean>(() => false);
+```
+
+Usage inside a request:
+```ts
+this.http.post('endpoint', body, {
+  context: new HttpContext().set(ENABLE_SUCCESS, true),
+});
+```
+
+---
+
+### 4. State Management with Signals
+Each service manages its own state using Angular’s `signal`.
+
+Pattern:
+```ts
+entityListState = signal<ApiState<ApiResponse<Entity[]>>>({
+  loading: false,
+  response: null,
+  error: null,
+});
+
+entityState = signal<ApiState<ApiResponse<Entity>>>({
+  loading: false,
+  response: null,
+  error: null,
+});
+```
+
+---
+
+### 5. Connect to Components
+- Inject your service in the component.
+- Use `async` pipe in templates where possible.
+- Always **subscribe in the component** that uses the service:
+- Use `takeUntilDestroyed` (Angular 16+)
+- Angular gives you a built-in way to auto-unsubscribe when the component is destroyed:
+- `takeUntilDestroyed()` needs to run inside Angular’s injection context (constructor, field initializer, or with `DestroyRef`).
+- You must use `(DestroyRef)` with a normal method `(fetch)`, because Angular doesn’t know which injection context to bind it to.
 
 ```typescript
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -241,28 +361,26 @@ export class MembersComponent implements OnInit{
 }
 ```
 
-## 3. Enable Global Loading & Error (optional)
 
-Use `HttpContext` when you want the **global spinner** or **error toast**:
+---
 
-```typescript
-import { HttpContext } from "@angular/common/http";
-  getMembers(query: { page?: number; limit?: number; search?: string }) {
-   const params = ParamatersParser.parseTableFilter(filterBody);
+## ✅ Best Practices
+- Always define a **model** before creating the service.
+- Use **signals** for local state instead of `BehaviorSubject`.
+- Always wrap API calls with `HttpService` (never use `HttpClient` directly).
+- Use **context tokens** to control interceptors instead of hardcoding logic.
 
-    return this.http.get<Member[]>('/api/members', this.membersState(), {
-      params,
-      context: new HttpContext()
-        .set(ENABLE_LOADING, true)
-        .set(ENABLE_ERROR, true),
-  }
-```
+---
 
-## ✅ Summary
+## 🚀 Creating a New Feature (Quick Checklist)
+1. Create a `models/your-feature.model.ts`.
+2. Create a `services/your-feature.service.ts`.
+3. Add CRUD methods using `HttpService`.
+4. Use `signal` for state management.
+5. Apply `ENABLE_SUCCESS`, `DISABLE_ERROR`, `DISABLE_LOADING` where needed.
+6. Connect service state to components.
 
-- Create a service → inject `HttpService`.
-- Call `.get/.post/.put/.delete` with type + endpoint (+ params).
-- Subscribe only in the component.
-- Use Angular’s `takeUntilDestroyed` to auto-unsubscribe:
-- Use `ENABLE_LOADING` and `ENABLE_ERROR` when you want global spinner + toast.
+---
+
+Now you can easily add new features following the **MembersService** pattern.
 
