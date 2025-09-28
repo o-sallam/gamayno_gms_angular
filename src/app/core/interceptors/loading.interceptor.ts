@@ -1,11 +1,8 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { HttpContextToken } from '@angular/common/http';
 import { LoadingService } from '../services/loading.service';
 import { finalize } from 'rxjs';
-
-export const ENABLE_LOADING = new HttpContextToken<boolean>(() => false);
-export const ENABLE_ERROR = new HttpContextToken<boolean>(() => false);
+import { ENABLE_LOADING } from './http-context-tokens';
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loadingService = inject(LoadingService);

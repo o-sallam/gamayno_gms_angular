@@ -18,13 +18,6 @@ import { InputTextModule } from 'primeng/inputtext';
   templateUrl: './text-input.component.html',
   styleUrls: ['./text-input.component.scss'],
   imports: [InputTextModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TextInputComponent),
-      multi: true,
-    },
-  ],
 })
 export class TextInputComponent implements ControlValueAccessor {
   label = input<string>('');
@@ -43,8 +36,7 @@ export class TextInputComponent implements ControlValueAccessor {
   // optional: access host NgControl to show validation
   constructor(@Optional() @Self() public ngControl: NgControl) {
     if (this.ngControl) {
-      // tell Angular forms that this component is the value accessor
-      this.ngControl.valueAccessor = this;
+      this.ngControl.valueAccessor = this; // ✅ avoid NG_VALUE_ACCESSOR circular dep
     }
   }
 

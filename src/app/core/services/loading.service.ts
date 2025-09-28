@@ -9,6 +9,9 @@ export class LoadingService {
   readonly loading = this._loading.asReadonly();
 
   setLoading(state: boolean) {
+    if (!state) {
+      console.log('loading false');
+    }
     this._loading.set(state);
   }
 }

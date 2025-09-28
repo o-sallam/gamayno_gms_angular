@@ -1,0 +1,98 @@
+<app-dialog
+  [title]="dialogConfig()?.title!"
+  [visible]="dialogVisible()"
+  [hasButtons]="hasButtons()"
+  (primaryClick)="confirmDialog()"
+  (close)="closeDialog()"
+>
+  @switch (dialogConfig()?.mode) { @case ('add') {
+  <form [formGroup]="form">
+    <app-text-input
+      [label]="'Name'"
+      [formControlName]="'name'"
+    ></app-text-input>
+  </form>
+  } @case ('update') {
+  <form [formGroup]="form">
+    <app-text-input
+      [label]="'Name'"
+      [formControlName]="'name'"
+    ></app-text-input>
+  </form>
+  } @case ('delete') {
+  <div class="p-4">
+    Are you sure you want to delete
+    <strong>{{ dialogConfig()?.row?.name }}</strong
+    >?
+  </div>
+  } @case ('details') {
+  <div class="p-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="space-y-3">
+        <app-details-field
+          [label]="'Code'"
+          [value]="dialogConfig()?.row?.code!"
+          [type]="'text'"
+        ></app-details-field>
+        <app-details-field
+          [label]="'Name'"
+          [value]="dialogConfig()?.row?.name!"
+          [type]="'text'"
+        ></app-details-field>
+        <app-details-field
+          [label]="'Status'"
+          [value]="dialogConfig()?.row?.status!"
+          [type]="'tag'"
+        ></app-details-field>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-1"
+            >Balance</label
+          >
+          <div class="p-2">
+            ${{ dialogConfig()?.row?.balance | number : "1.2-2" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-1"
+            >Debt</label
+          >
+          <div class="p-2">
+            ${{ dialogConfig()?.row?.debt | number : "1.2-2" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-1"
+            >Credit</label
+          >
+          <div class="p-2">
+            ${{ dialogConfig()?.row?.credit | number : "1.2-2" }}
+          </div>
+        </div>
+      </div>
+    </div>
+    @if (dialogConfig()?.row?.address || dialogConfig()?.row?.phone) {
+    <div class="mt-4 pt-4 border-t border-[var(--primary-color)]">
+      <h3 class="text-lg font-medium mb-3">Contact Information</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        @if (dialogConfig()?.row?.address) {
+        <app-details-field
+          [label]="'Address'"
+          [value]="dialogConfig()?.row?.address!"
+          [type]="'text'"
+        ></app-details-field>
+
+        } @if (dialogConfig()?.row?.phone) {
+        <app-details-field
+          [label]="'Phone'"
+          [value]="dialogConfig()?.row?.phone!"
+          [type]="'text'"
+        ></app-details-field>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  } }
+</app-dialog>

@@ -1,6 +1,17 @@
-import { Component, input, output, ViewChild } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChildren,
+  input,
+  output,
+  QueryList,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
+import { NgTemplateOutlet } from '@angular/common';
+import { CellTemplateDirective } from '../../directives/cell-template.directive';
 
 export interface TableFilterBody {
   sort: { field: string; order: number };
@@ -10,19 +21,29 @@ export interface TableFilterBody {
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  imports: [TableModule, InputTextModule],
+  styleUrls: ['./table.component.scss'],
+  imports: [TableModule, InputTextModule, NgTemplateOutlet],
 })
-export class TableComponent {
-  // 👇 ViewChild
+export class TableComponent<T> implements AfterContentInit {
+  // 👇 ViewChild & ContentChildren
   @ViewChild('dt') dt!: Table;
+
+  @ContentChildren(CellTemplateDirective)
+  cellTemplates!: QueryList<CellTemplateDirective>;
 
   // 👇 Inputs
   columns = input.required<{ field: string; header: string }[]>();
-  data = input.required<any[]>();
+  data = input.required<T[]>();
   totalRecords = input.required<number>();
+  hasDelete = input<boolean>(false);
+  hasUpdate = input<boolean>(false);
+  hasDetails = input<boolean>(false);
 
   // 👇 Outputs
   fetch = output<TableFilterBody>();
+  delete = output<T>();
+  update = output<T>();
+  details = output<T>();
 
   // 👇 Locals
   filterBody: TableFilterBody = {
@@ -34,6 +55,7 @@ export class TableComponent {
   lastSortField: string | null = null;
   lastSortOrder: number | null = null;
   lastFirst = 0;
+  templateMap = new Map<string, TemplateRef<any>>();
 
   // ✅ Custom sorting logic
   // customSort(event: SortEvent) {
@@ -41,6 +63,24 @@ export class TableComponent {
 
   //   this.fetch.emit(this.filterBody);
   // }
+
+  ngAfterContentInit() {
+    this.setTemplates();
+  }
+  setTemplates() {
+    this.cellTemplates.forEach((d) =>
+      this.templateMap.set(d.field, d.template)
+    );
+  }
+  getTemplate(field: string): TemplateRef<any> | null {
+    return this.templateMap.get(field) || null;
+  }
+  getActionsTemplate(): TemplateRef<any> | null {
+    return this.templateMap.get('actions') || null;
+  }
+  trackByField(index: number, col: { field: string }) {
+    return col.field;
+  }
 
   onFilterBySearch(e: Event, field: string) {
     const value = (e.target as HTMLInputElement).value;
@@ -130,5 +170,14 @@ export class TableComponent {
   }
   emitData() {
     this.fetch.emit(this.filterBody);
+  }
+  onDelete(row: any) {
+    this.delete.emit(row);
+  }
+  onUpdate(row: any) {
+    this.update.emit(row);
+  }
+  onDetails(row: any) {
+    this.details.emit(row);
   }
 }
