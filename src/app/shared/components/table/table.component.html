@@ -23,7 +23,8 @@
       </th>
       }
       <!-- actions column -->
-      @if (hasDelete() || hasUpdate() || hasDetails() || getActionsTemplate()) {
+      @if (hasDelete() || hasUpdate() || hasDetails() ||
+      getActionsTemplateFor()) {
       <th></th>
       }
     </tr>
@@ -42,7 +43,8 @@
       </th>
       }
       <!-- actions column -->
-      @if (hasDelete() || hasUpdate() || hasDetails() || getActionsTemplate()) {
+      @if (hasDelete() || hasUpdate() || hasDetails() ||
+      getActionsTemplateFor()) {
       <th></th>
       }
     </tr>
@@ -51,15 +53,19 @@
   <!-- Body with content projection -->
   <ng-template pTemplate="body" let-row>
     <tr>
-      @for (col of columns(); track trackByField($index, col)) {
+      @for (col of columns(); track col.field) {
       <ng-container
-        [ngTemplateOutlet]="getTemplate(col.field) || defaultTemplate"
-        [ngTemplateOutletContext]="{ $implicit: row[col.field], row: row }"
+        [ngTemplateOutlet]="getTemplateFor()(col.field) || defaultTemplate"
+        [ngTemplateOutletContext]="{
+          $implicit: row[col.field],
+          row: row,
+          index: $index
+        }"
       ></ng-container>
       }
       <!-- actions column -->
       <ng-container
-        [ngTemplateOutlet]="getActionsTemplate() || defaultActionsTemplate"
+        [ngTemplateOutlet]="getActionsTemplateFor() || defaultActionsTemplate"
         [ngTemplateOutletContext]="{ $implicit: row }"
       ></ng-container>
     </tr>
@@ -70,9 +76,8 @@
   <td>{{ value }}</td>
 </ng-template>
 <ng-template #defaultActionsTemplate let-value>
-  <!-- update cell template -->
 
-  <!-- delete cell template -->
+  <!-- actions cell template -->
   @if (hasDelete() || hasUpdate() || hasDetails()) {
   <td class="flex gap-2">
     @if (hasDetails()) {
