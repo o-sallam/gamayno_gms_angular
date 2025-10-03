@@ -1,10 +1,12 @@
 import {
   AfterContentInit,
   Component,
+  computed,
   ContentChildren,
   input,
   output,
   QueryList,
+  signal,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
@@ -55,7 +57,7 @@ export class TableComponent<T> implements AfterContentInit {
   lastSortField: string | null = null;
   lastSortOrder: number | null = null;
   lastFirst = 0;
-  templateMap = new Map<string, TemplateRef<any>>();
+  templateMap = signal<Map<string, TemplateRef<any>>>(new Map());
 
   // ✅ Custom sorting logic
   // customSort(event: SortEvent) {
@@ -68,19 +70,26 @@ export class TableComponent<T> implements AfterContentInit {
     this.setTemplates();
   }
   setTemplates() {
-    this.cellTemplates.forEach((d) =>
-      this.templateMap.set(d.field, d.template)
-    );
+    const newMap = new Map<string, TemplateRef<any>>();
+    this.cellTemplates.forEach((d) => newMap.set(d.field, d.template));
+    this.templateMap.set(newMap);
   }
-  getTemplate(field: string): TemplateRef<any> | null {
-    return this.templateMap.get(field) || null;
-  }
-  getActionsTemplate(): TemplateRef<any> | null {
-    return this.templateMap.get('actions') || null;
-  }
-  trackByField(index: number, col: { field: string }) {
-    return col.field;
-  }
+  
+  // ✅ Cache templates by field
+  // these fuctions are called only once or when the templateMap changes
+  // (dont run on every change detection cycle)
+  getTemplateFor = computed(() => {
+    console.log('getTemplateFor');
+
+    const map = this.templateMap();
+    return (field: string): TemplateRef<any> | null => map.get(field) || null;
+  });
+  getActionsTemplateFor = computed(() => {
+    console.log('getActionsTemplateFor');
+
+    const map = this.templateMap();
+    return map.get('actions') || null;
+  });
 
   onFilterBySearch(e: Event, field: string) {
     const value = (e.target as HTMLInputElement).value;
