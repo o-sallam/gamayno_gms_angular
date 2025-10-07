@@ -25,7 +25,9 @@ export class MembersService {
       credit: 308.08,
       address: 'Los Angeles',
       phone: '+1-555-9134',
-      status: 'active',
+      subscription: 'active',
+      subscriptionStartDate: new Date(),
+      subscriptionEndDate: new Date(),
     },
     {
       id: 2,
@@ -36,7 +38,7 @@ export class MembersService {
       credit: 2357.74,
       address: 'Dallas',
       phone: '+1-555-6977',
-      status: 'active',
+      subscription: 'active',
     },
     {
       id: 3,
@@ -47,7 +49,7 @@ export class MembersService {
       credit: 465.79,
       address: 'Philadelphia',
       phone: '+1-555-3140',
-      status: 'inactive',
+      subscription: 'inactive',
     },
     {
       id: 4,
@@ -58,7 +60,7 @@ export class MembersService {
       credit: 3422.37,
       address: 'Philadelphia',
       phone: '+1-555-2025',
-      status: 'inactive',
+      subscription: 'inactive',
     },
     {
       id: 5,
@@ -69,7 +71,7 @@ export class MembersService {
       credit: 3800.01,
       address: 'Los Angeles',
       phone: '+1-555-1155',
-      status: 'inactive',
+      subscription: 'inactive',
     },
     {
       id: 6,
@@ -80,7 +82,7 @@ export class MembersService {
       credit: 2504.32,
       address: 'Houston',
       phone: '+1-555-6432',
-      status: 'active',
+      subscription: 'active',
     },
     {
       id: 7,
@@ -91,7 +93,7 @@ export class MembersService {
       credit: 3867.4,
       address: 'Phoenix',
       phone: '+1-555-4332',
-      status: 'active',
+      subscription: 'active',
     },
     {
       id: 8,
@@ -102,7 +104,7 @@ export class MembersService {
       credit: 571.92,
       address: 'San Diego',
       phone: '+1-555-3815',
-      status: 'active',
+      subscription: 'active',
     },
     {
       id: 9,
@@ -113,7 +115,7 @@ export class MembersService {
       credit: 5278.88,
       address: 'Los Angeles',
       phone: '+1-555-9723',
-      status: 'active',
+      subscription: 'active',
     },
     {
       id: 10,

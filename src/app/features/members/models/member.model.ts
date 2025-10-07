@@ -7,5 +7,7 @@ export interface Member {
   credit: number;
   address?: string;
   phone?: string;
-  status?: string;
+  subscription?: string;
+  subscriptionStartDate?: Date;
+  subscriptionEndDate?: Date;
 }

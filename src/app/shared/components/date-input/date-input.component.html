@@ -5,17 +5,19 @@
   </label>
   }
 
-  <input
-    pInputText
-    [type]="type()"
+  <p-datepicker
+    [appendTo]="'body'"
+    [showIcon]="showIcon()"
     [placeholder]="placeholder()"
     [disabled]="disabled()"
-    [value]="value()"
-    (input)="onInput($any($event.target).value)"
-    (blur)="onBlur()"
-    [class]="inputClass()"
+    [ngModel]="value()"
+    (ngModelChange)="onSelect($event)"
+    (onBlur)="onBlur()"
+    [dateFormat]="dateFormat()"
+    [inputStyleClass]="inputClass()"
     class="w-full"
   />
+
   @if (control?.invalid && (control?.touched || control?.dirty)) {
   <div class="p-error">{{ errorMessage() }}</div>
   }

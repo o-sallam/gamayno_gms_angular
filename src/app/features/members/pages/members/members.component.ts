@@ -53,7 +53,7 @@ export class Members implements OnInit {
     { field: 'credit', header: 'Credit' },
     // { field: 'address', header: 'Address' },
     // { field: 'phone', header: 'Phone' },
-    { field: 'status', header: 'Status' },
+    { field: 'subscription', header: 'Subscription' },
   ];
   get data() {
     return this.membersService.membersState().response!.data;

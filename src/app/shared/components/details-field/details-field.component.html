@@ -3,7 +3,7 @@
 </label>
 
 @switch (type()) { @case ('text') {
-<div class="p-2">{{ value() }}</div>
+<div class="">{{ value() }}</div>
 } @case ('tag') {
 <p-tag
   [value]="value()"
@@ -11,6 +11,8 @@
 ></p-tag>
 } @case ('custom') {
 <ng-content></ng-content>
+} @case ('date') {
+<div class="">{{ value() | date : "dd/MM/yyyy" }}</div>
 } @default {
 <span class="text-gray-400">Unknown field type</span>
 } }
