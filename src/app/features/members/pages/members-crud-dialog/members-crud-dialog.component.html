@@ -8,46 +8,119 @@
   @switch (dialogConfig()?.mode) { @case ('add') {
   <form [formGroup]="form" class="flex flex-col gap-3">
     <app-text-input [label]="'Name'" formControlName="name"></app-text-input>
-    <app-date-input
-      [label]="'Subscription Start Date'"
-      formControlName="subscriptionStartDate"
-    ></app-date-input>
-    <app-date-input
-      [label]="'Subscription End Date'"
-      formControlName="subscriptionEndDate"
-    ></app-date-input>
-    <app-text-input [label]="'Phone'" formControlName="phone"></app-text-input>
-    <app-text-input
-      [label]="'Address'"
-      formControlName="address"
-    ></app-text-input>
+    <div class="flex gap-2">
+      <app-text-input
+        [label]="'Subscription fee'"
+        formControlName="subscriptionFee"
+        (onInputChange)="setTotalSubscriptionFee()"
+        [type]="'number'"
+        [min]="0"
+      ></app-text-input>
+      <app-text-input
+        [label]="'Month count'"
+        formControlName="subscriptionmonthCount"
+        (onInputChange)="setSubscriptionData()"
+        [type]="'number'"
+        [min]="1"
+        [max]="12"
+      ></app-text-input>
+    </div>
+    <app-details-field
+      [label]="'Total subscription fee'"
+      [value]="totalSubscriptionFee()"
+      [type]="'text'"
+    ></app-details-field>
+    <div class="flex gap-2">
+      <app-date-input
+        [label]="'Subscription start date'"
+        formControlName="subscriptionStartDate"
+        (valueChange)="setSubscriptionEndDate($event)"
+      ></app-date-input>
+      <app-date-input
+        [label]="'Subscription end date'"
+        formControlName="subscriptionEndDate"
+        [disabled]="true"
+      ></app-date-input>
+    </div>
+
+    <div class="flex gap-2 items-center">
+      <app-text-input
+        [label]="'Paid fee'"
+        formControlName="paidFee"
+        [type]="'number'"
+        (onInputChange)="setPaidFee()"
+        [min]="0"
+      ></app-text-input>
+      <app-details-field
+        [label]="'Left to pay'"
+        [value]="leftToPay()"
+        [type]="'text'"
+      ></app-details-field>
+    </div>
+    <div>
+      <app-dialog-section [title]="'Additional Info'"></app-dialog-section>
+      <app-text-input
+        [label]="'Phone'"
+        formControlName="phone"
+      ></app-text-input>
+      <app-text-input
+        [label]="'Address'"
+        formControlName="address"
+      ></app-text-input>
+    </div>
   </form>
   } @case ('update') {
-  <form [formGroup]="form" class="flex flex-col gap-3">
-    <app-text-input
-      [label]="'Name'"
-      [formControlName]="'name'"
-    ></app-text-input>
-    <app-date-input
-      [label]="'Subscription Start Date'"
-      formControlName="subscriptionStartDate"
-    ></app-date-input>
-    <app-date-input
-      [label]="'Subscription End Date'"
-      formControlName="subscriptionEndDate"
-    ></app-date-input>
-    <div class="flex gap-6 items-center">
-      <app-details-field
-        [label]="'Subscription'"
-        [value]="subscriptionStatus()"
-        [type]="'tag'"
-      ></app-details-field>
-      <p-toggleswitch
-        [ngModel]="checked()"
-        [ngModelOptions]="{ standalone: true }"
-        (ngModelChange)="onToggleChange($event)"
-      />
-    </div>
+  <form [formGroup]="form" class="flex flex-col">
+    <app-text-input [label]="'Name'" formControlName="name"></app-text-input>
+
+    <app-dialog-section [title]="'Subscription'" [hasBorderTop]="false">
+      <div class="flex flex-col gap-2">
+        <app-date-input
+          [label]="'Subscription start date'"
+          formControlName="subscriptionStartDate"
+        ></app-date-input>
+        <app-date-input
+          [label]="'Subscription end date'"
+          formControlName="subscriptionEndDate"
+        ></app-date-input>
+        <div class="flex gap-6 items-center">
+          <app-details-field
+            [label]="'Subscription'"
+            [value]="subscriptionStatus()"
+            [type]="'tag'"
+          ></app-details-field>
+          <p-toggleswitch
+            [ngModel]="checked()"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onToggleChange($event)"
+          />
+        </div>
+      </div>
+    </app-dialog-section>
+    <app-dialog-section [title]="'Suspension'" [hasBorderTop]="false">
+      <div class="flex gap-6 items-center">
+        <app-date-input
+          [label]="'Suspension Start Date'"
+          formControlName="suspensionStartDate"
+          (valueChange)="setSuspensionEndDate($event)"
+        ></app-date-input>
+        <app-text-input
+          [label]="'Days of Suspension'"
+          formControlName="daysOfSuspension"
+          (onInputChange)="setSuspensionEndDate()"
+          [type]="'number'"
+          [min]="0"
+        ></app-text-input>
+      </div>
+      <app-date-input
+        [label]="'Suspension End Date'"
+        [value]="suspensionEndDate()"
+        [disabled]="true"
+      ></app-date-input>
+      <p class="block text-sm font-medium text-gray-500 mb-1">
+        Suspension count: {{ form.value.suspensionCount }}
+      </p>
+    </app-dialog-section>
   </form>
   } @case ('delete') {
   <div class="p-4">
@@ -65,47 +138,57 @@
           [type]="'text'"
         ></app-details-field>
         <app-details-field
+          [label]="'Balance'"
+          [value]="dialogConfig()?.row?.balance!"
+          [type]="'text'"
+        ></app-details-field>
+        <app-details-field
+          [label]="'Left to pay'"
+          [value]="dialogConfig()?.row?.leftToPay!"
+          [type]="'text'"
+        ></app-details-field>
+        <app-details-field
+          [label]="'Subscription start date'"
+          [value]="dialogConfig()?.row?.subscriptionStartDate!"
+          [type]="'date'"
+        ></app-details-field>
+        <app-details-field
+          [label]="'Month count'"
+          [value]="dialogConfig()?.row?.monthCount ?? 1"
+          [type]="'text'"
+        ></app-details-field>
+      </div>
+      <div class="space-y-3">
+        <app-details-field
           [label]="'Name'"
           [value]="dialogConfig()?.row?.name!"
           [type]="'text'"
         ></app-details-field>
+
         <app-details-field
-          [label]="'Subscription Start Date'"
-          [value]="dialogConfig()?.row?.subscriptionStartDate!"
-          [type]="'date'"
+          [label]="'Paid fee'"
+          [value]="dialogConfig()?.row?.paidFee!"
+          [type]="'text'"
         ></app-details-field>
         <app-details-field
           [label]="'Subscription'"
           [value]="dialogConfig()?.row?.subscription!"
           [type]="'tag'"
         ></app-details-field>
-      </div>
-      <div class="space-y-3">
         <app-details-field
-          [label]="'Balance'"
-          [value]="dialogConfig()?.row?.balance!"
-          [type]="'text'"
-        ></app-details-field>
-        <app-details-field
-          [label]="'Debt'"
-          [value]="dialogConfig()?.row?.debt!"
-          [type]="'text'"
-        ></app-details-field>
-        <app-details-field
-          [label]="'Subscription End Date'"
+          [label]="'Subscription end date'"
           [value]="dialogConfig()?.row?.subscriptionEndDate!"
           [type]="'date'"
         ></app-details-field>
         <app-details-field
-          [label]="'Credit'"
-          [value]="dialogConfig()?.row?.credit!"
+          [label]="'Suspension count'"
+          [value]="dialogConfig()?.row?.suspensionCount!"
           [type]="'text'"
         ></app-details-field>
       </div>
     </div>
     @if (dialogConfig()?.row?.address || dialogConfig()?.row?.phone) {
-    <div class="mt-4 pt-4 border-t border-[var(--primary-color)]">
-      <h3 class="text-lg font-medium mb-3">Contact Information</h3>
+    <app-dialog-section [title]="'Contact Information'">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         @if (dialogConfig()?.row?.address) {
         <app-details-field
@@ -122,7 +205,8 @@
         ></app-details-field>
         }
       </div>
-    </div>
+    </app-dialog-section>
+
     }
   </div>
   } }

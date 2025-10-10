@@ -3,11 +3,13 @@ export interface Member {
   code: string;
   name: string;
   balance: number;
-  debt: number;
-  credit: number;
+  paidFee: number;
+  leftToPay: number;
   address?: string;
   phone?: string;
   subscription?: string;
   subscriptionStartDate?: Date;
   subscriptionEndDate?: Date;
+  suspensionCount?: number;
+  monthCount?: number;
 }

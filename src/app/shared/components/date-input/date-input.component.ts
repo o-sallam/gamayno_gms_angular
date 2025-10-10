@@ -5,6 +5,7 @@ import {
   input,
   signal,
   computed,
+  model,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -31,7 +32,7 @@ export class DateInputComponent implements ControlValueAccessor {
   dateFormat = input<string>('dd/mm/yy');
   showIcon = input<boolean>(true);
 
-  value = signal<Date | null>(null);
+  value = model<Date | null>(null);
 
   private _onChange: (v: any) => void = () => {};
   private _onTouched: () => void = () => {};

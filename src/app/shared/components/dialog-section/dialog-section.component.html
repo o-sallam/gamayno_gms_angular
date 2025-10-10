@@ -1,0 +1,11 @@
+<h3
+  class="text-lg font-medium mt-2 mb-1"
+  [ngClass]="{
+    '!my-4 pt-4 border-t border-[var(--primary-color)]': hasBorderTop()
+  }"
+>
+  {{ title() }}
+</h3>
+<div class="flex flex-col gap-2">
+  <ng-content></ng-content>
+</div>

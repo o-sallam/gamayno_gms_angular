@@ -6,6 +6,7 @@ import {
   Optional,
   Self,
   computed,
+  output,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -26,12 +27,15 @@ import { EMPTY } from 'rxjs';
 export class TextInputComponent implements ControlValueAccessor {
   label = input<string>('');
   placeholder = input<string>('');
-  type = input<'text' | 'password' | 'email'>('text');
+  type = input<'text' | 'password' | 'email' | 'number'>('text');
   disabled = input<boolean>(false);
+  min = input<number | null>(null);
+  max = input<number | null>(null);
   // expose a class input so parent can forward classes
   inputClass = input<string>('');
 
   value = signal<string>('');
+  onInputChange = output<string>();
 
   // ControlValueAccessor callbacks
   private _onChange: (v: any) => void = () => {};
@@ -73,7 +77,8 @@ export class TextInputComponent implements ControlValueAccessor {
   // local handler when user types
   onInput(value: string) {
     this.value.set(value);
-    this._onChange(value); // propagate to form
+    this._onChange(value);
+    this.onInputChange.emit(value);
   }
 
   // on blur (mark touched)
