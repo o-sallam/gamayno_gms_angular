@@ -1,0 +1,33 @@
+<app-dialog
+  [visible]="dialogVisible()"
+  title="Suspension"
+  primaryLabel="Confirm"
+  secondaryLabel="Cancel"
+  (primaryClick)="onSubmit()"
+  (close)="onClose()"
+>
+  <form [formGroup]="suspensionForm" class="space-y-4">
+    <div class="flex gap-6 items-center">
+      <app-date-input
+        [label]="'Suspension Start Date'"
+        formControlName="startDate"
+        (valueChange)="setSuspensionEndDate($event)"
+      ></app-date-input>
+      <app-text-input
+        [label]="'Days of Suspension'"
+        formControlName="daysOfSuspension"
+        (onInputChange)="setSuspensionEndDate()"
+        [type]="'number'"
+        [min]="0"
+      ></app-text-input>
+    </div>
+    <app-date-input
+      [label]="'Suspension End Date'"
+      [value]="suspensionEndDate()"
+      [disabled]="true"
+    ></app-date-input>
+    <p class="block text-sm font-medium text-gray-500 mb-1">
+      Suspension Count: {{ suspensionCount() }}
+    </p>
+  </form>
+</app-dialog>

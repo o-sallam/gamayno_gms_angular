@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Member } from '../models/member.model';
+import { Subscription } from '../models/subscription.model';
 import { HttpService } from '../../../core/services/http.service';
 import { TableFilterBody } from '../../../shared/components/table/table.component';
 import { ParamatersParser } from '../../../core/config/paramaters-parser';
@@ -277,6 +278,34 @@ export class MembersService {
 
   delete(id: number): Observable<any> {
     return this.http.delete<any>(`members/${id}`, {
+      context: new HttpContext().set(ENABLE_SUCCESS, true),
+    });
+  }
+
+  // Subscription methods
+  getSubscriptionsByMemberId(memberId: number): Observable<ApiResponse<Subscription[]>> {
+    const subscriptionsState = signal<ApiState<ApiResponse<Subscription[]>>>({
+      loading: false,
+      response: null,
+      error: null,
+    });
+    return this.http.get<ApiResponse<Subscription[]>>(`members/${memberId}/subscriptions`, subscriptionsState());
+  }
+
+  createSubscription(memberId: number, subscription: Partial<Subscription>): Observable<ApiResponse<Subscription>> {
+    return this.http.post<ApiResponse<Subscription>>(`members/${memberId}/subscriptions`, subscription, {
+      context: new HttpContext().set(ENABLE_SUCCESS, true),
+    });
+  }
+
+  updateSubscription(subscriptionId: number, subscription: Partial<Subscription>): Observable<ApiResponse<Subscription>> {
+    return this.http.put<ApiResponse<Subscription>>(`subscriptions/${subscriptionId}`, subscription, {
+      context: new HttpContext().set(ENABLE_SUCCESS, true),
+    });
+  }
+
+  deleteSubscription(subscriptionId: number): Observable<any> {
+    return this.http.delete<any>(`subscriptions/${subscriptionId}`, {
       context: new HttpContext().set(ENABLE_SUCCESS, true),
     });
   }

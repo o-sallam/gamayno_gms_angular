@@ -6,22 +6,20 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { MembersService } from '../../services/members.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   TableComponent,
   TableFilterBody,
 } from '../../../../shared/components/table/table.component';
-import { Button } from '../../../../shared/components/button/button.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TagModule } from 'primeng/tag';
 import { CellTemplateDirective } from '../../../../shared/directives/cell-template.directive';
 import { Member } from '../../models/member.model';
-import {
-  DialogConfig,
-  DialogConfirm,
-} from '../../../../core/models/dialog-models';
-import { MembersCrudDialogComponent } from '../members-crud-dialog/members-crud-dialog.component';
+import { DialogConfirm } from '../../../../core/models/dialog-models';
+import { DeleteMembersDialogComponent } from '../../components/dialogs/delete-members-dialog/delete-members-dialog.component';
+import { AddMemberDialogComponent } from '../../components/dialogs/add-member-dialog/add-member-dialog.component';
 type RowData = Member;
 type PartialRowData = Partial<RowData>;
 
@@ -30,10 +28,10 @@ type PartialRowData = Partial<RowData>;
   imports: [
     TableComponent,
     CellTemplateDirective,
-    Button,
     ReactiveFormsModule,
     TagModule,
-    MembersCrudDialogComponent,
+    DeleteMembersDialogComponent,
+    AddMemberDialogComponent,
   ],
   templateUrl: './members.component.html',
   styleUrl: './members.component.scss',
@@ -41,18 +39,18 @@ type PartialRowData = Partial<RowData>;
 export class Members implements OnInit {
   membersService = inject(MembersService);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
   @ViewChild(TableComponent) table!: TableComponent<RowData>;
-  dialogConfig = signal<DialogConfig<RowData>>(null);
-  //TODO: open row details dialog
+  selectedRow = signal<RowData | null>(null);
+  deleteDialogVisible = signal(false);
+  addRowDialogVisible = signal(false);
+
   columns = [
-    // { field: 'id', header: 'ID' },
     { field: 'code', header: 'Code' },
     { field: 'name', header: 'Name' },
     { field: 'balance', header: 'Balance' },
     { field: 'paidFee', header: 'Paid fee' },
     { field: 'leftToPay', header: 'Left to pay' },
-    // { field: 'address', header: 'Address' },
-    // { field: 'phone', header: 'Phone' },
     { field: 'subscription', header: 'Subscription' },
   ];
   get data() {
@@ -68,30 +66,26 @@ export class Members implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }
-  openDialog(mode: 'add' | 'update' | 'delete' | 'details', rowData?: RowData) {
-    const title =
-      mode === 'add'
-        ? 'Add Member'
-        : mode === 'update'
-        ? 'Update Member'
-        : mode === 'delete'
-        ? 'Delete Member'
-        : 'Member Details';
-    this.dialogConfig.set({ title, mode, row: rowData });
+  openDeleteDialog(data: RowData) {
+    this.selectedRow.set(data);
+    this.deleteDialogVisible.set(true);
+  }
+  colseDeleteDialog() {
+    this.deleteDialogVisible.set(false);
+  }
+  openAddRowDialog() {
+    this.addRowDialogVisible.set(true);
+  }
+  colseAddRowDialog() {
+    this.addRowDialogVisible.set(false);
+  }
+  navigateToDetails(member: RowData) {
+    this.router.navigate(['/members', member.id]);
   }
   handleConfirmDialog(dialogConfirm: DialogConfirm<PartialRowData>) {
     switch (dialogConfirm.mode) {
       case 'add':
         this.addRow(dialogConfirm.data);
-        break;
-      case 'update':
-        this.updateRow(dialogConfirm.data);
-        break;
-      case 'delete':
-        this.deleteRow(dialogConfirm.data);
-        break;
-      case 'details':
-        // Details mode doesn't need any action, just close dialog
         break;
     }
   }
@@ -124,23 +118,6 @@ export class Members implements OnInit {
         },
         error: (error) => {
           console.log(error);
-        },
-      });
-  }
-  updateRow(row: PartialRowData) {
-    this.membersService
-      .update(row.id!, row)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.membersService.membersState.update((state) => ({
-            ...state,
-            data: this.membersService
-              .membersState()
-              .response!.data.map((member) =>
-                member.id === row.id ? response.data : member
-              ),
-          }));
         },
       });
   }

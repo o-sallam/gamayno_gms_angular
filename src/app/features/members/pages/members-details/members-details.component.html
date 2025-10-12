@@ -1,0 +1,202 @@
+<div class="">
+  <div class="flex justify-between">
+    <h2 class="text-2xl font-semibold text-white mb-6">Member Details</h2>
+    <div class="flex gap-2 items-center text-2xl">
+      <img
+        src="assets/icons/pause.svg"
+        alt="Suspension"
+        width="24"
+        height="24"
+        (click)="openSuspensionDialog()"
+        title="Suspension"
+        class="cursor-pointer"
+      />
+      <img
+        src="assets/icons/edit-user.svg"
+        alt="Update Member"
+        width="24"
+        height="24"
+        (click)="openUpdateDialog()"
+        title="Update Member"
+        class="cursor-pointer"
+      />
+    </div>
+  </div>
+
+  @if (loading()) {
+  <div class="flex justify-center items-center py-8">
+    <div
+      class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
+    ></div>
+  </div>
+  } @else if (member()) {
+  <div
+    class="grid grid-cols-1 md:grid-cols-4 gap-6 rounded-lg shadow-sm border border-[var(--primary-color)] p-6 mb-6"
+  >
+    <!-- First Row -->
+    <app-details-field
+      [label]="'Code'"
+      [value]="member()?.code!"
+      [type]="'text'"
+    ></app-details-field>
+
+    <app-details-field
+      [label]="'Name'"
+      [value]="member()?.name!"
+      [type]="'text'"
+    ></app-details-field>
+
+    <app-details-field
+      [label]="'Balance'"
+      [value]="member()?.balance!"
+      [type]="'text'"
+    ></app-details-field>
+
+    <app-details-field
+      [label]="'Paid Fee'"
+      [value]="member()?.paidFee!"
+      [type]="'text'"
+    ></app-details-field>
+
+    <app-details-field
+      [label]="'Left to Pay'"
+      [value]="member()?.leftToPay!"
+      [type]="'text'"
+    ></app-details-field>
+
+    <!-- Second Row -->
+    <app-details-field
+      [label]="'Address'"
+      [value]="member()?.address || 'N/A'"
+      [type]="'text'"
+    ></app-details-field>
+
+    <app-details-field
+      [label]="'Phone'"
+      [value]="member()?.phone || 'N/A'"
+      [type]="'text'"
+    ></app-details-field>
+
+    <app-details-field
+      [label]="'Subscription'"
+      [value]="member()?.subscription!"
+      [type]="'tag'"
+    ></app-details-field>
+
+    <app-details-field
+      [label]="'Subscription Start Date'"
+      [value]="member()?.subscriptionStartDate!"
+      [type]="'date'"
+    ></app-details-field>
+
+    <app-details-field
+      [label]="'Subscription End Date'"
+      [value]="member()?.subscriptionEndDate!"
+      [type]="'date'"
+    ></app-details-field>
+
+    <app-details-field
+      [label]="'Suspension Count'"
+      [value]="member()?.suspensionCount || 0"
+      [type]="'text'"
+    ></app-details-field>
+  </div>
+  }
+</div>
+
+<!-- Subscriptions Section -->
+<div class=" ">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-semibold text-white">Subscriptions</h2>
+    <img
+      src="assets/icons/renew.svg"
+      alt="Renew Subscription"
+      width="24"
+      height="24"
+      (click)="openRenewDialog()"
+      title="Renew Subscription"
+      class="cursor-pointer"
+    />
+  </div>
+
+  <app-table
+    [columns]="subscriptionColumns"
+    [data]="subscriptions()"
+    [totalRecords]="subscriptions().length"
+    [hasDetails]="false"
+    [hasUpdate]="false"
+    [hasDelete]="false"
+  >
+    <!-- Custom templates for date fields -->
+    <ng-template cellTemplate="createdAt" let-value>
+      <td>{{ value | date : "dd/MM/yyyy" }}</td>
+    </ng-template>
+    <ng-template cellTemplate="startDate" let-value>
+      <td>{{ value | date : "dd/MM/yyyy" }}</td>
+    </ng-template>
+    <ng-template cellTemplate="endDate" let-value>
+      <td>{{ value | date : "dd/MM/yyyy" }}</td>
+    </ng-template>
+  </app-table>
+</div>
+
+<!-- Deposits Section -->
+<div class="mt-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-semibold text-white">Deposits</h2>
+    <img
+      src="assets/icons/money-recive.svg"
+      alt="Add Deposit"
+      width="24"
+      height="24"
+      (click)="openDepositDialog()"
+      title="Add Deposit"
+      class="cursor-pointer"
+    />
+  </div>
+
+  <app-table
+    [columns]="depositColumns"
+    [data]="deposits()"
+    [totalRecords]="deposits().length"
+    [hasDetails]="false"
+    [hasUpdate]="false"
+    [hasDelete]="false"
+  >
+    <!-- Custom templates for date and currency fields -->
+    <ng-template cellTemplate="createdAt" let-value>
+      <td>{{ value | date : "dd/MM/yyyy" }}</td>
+    </ng-template>
+    <ng-template cellTemplate="amount" let-value>
+      <td class="text-green-600 font-semibold">
+        ${{ value | number : "1.2-2" }}
+      </td>
+    </ng-template>
+  </app-table>
+</div>
+<!-- Dialog Components -->
+<app-renew-subscription-dialog
+  [visible]="renewDialogVisible()"
+  (close)="closeRenewDialog()"
+  (primaryClick)="onRenewSubscription($event)"
+></app-renew-subscription-dialog>
+
+<app-update-member-dialog
+  [visible]="updateDialogVisible()"
+  [member]="member()"
+  (close)="closeUpdateDialog()"
+  (primaryClick)="onUpdateMember($event)"
+></app-update-member-dialog>
+
+<app-add-deposit-dialog
+  [visible]="depositDialogVisible()"
+  (close)="closeDepositDialog()"
+  (primaryClick)="onAddDeposit($event)"
+></app-add-deposit-dialog>
+
+<app-suspension-dialog
+  [visible]="suspensionDialogVisible()"
+  [memberSuspensionCount]="member()?.suspensionCount || 0"
+  (close)="closeSuspensionDialog()"
+  (primaryClick)="onSuspendMember($event)"
+></app-suspension-dialog>

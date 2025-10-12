@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastComponent } from './core/components/toast.component';
 import { SpinnerComponent } from './core/components/spinner.component';
-import { Members } from './features/members/pages/members/members.component';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +11,6 @@ import { Members } from './features/members/pages/members/members.component';
     CheckboxModule,
     ToastComponent,
     SpinnerComponent,
-    Members,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

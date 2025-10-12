@@ -1,0 +1,52 @@
+<app-dialog
+  [visible]="dialogVisible()"
+  title="Update Member"
+  primaryLabel="Update"
+  secondaryLabel="Cancel"
+  (primaryClick)="onSubmit()"
+  (close)="onClose()"
+>
+  <form [formGroup]="updateForm" class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-text-input
+        label="Name"
+        formControlName="name"
+        type="text"
+        [required]="true"
+      ></app-text-input>
+
+      <app-text-input
+        label="Code"
+        formControlName="code"
+        type="text"
+        [required]="true"
+      ></app-text-input>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-text-input
+        label="Phone"
+        formControlName="phone"
+        type="text"
+      ></app-text-input>
+
+      <app-text-input
+        label="Address"
+        formControlName="address"
+        type="text"
+      ></app-text-input>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-date-input
+        label="Subscription Start Date"
+        formControlName="subscriptionStartDate"
+      ></app-date-input>
+
+      <app-date-input
+        label="Subscription End Date"
+        formControlName="subscriptionEndDate"
+      ></app-date-input>
+    </div>
+  </form>
+</app-dialog>

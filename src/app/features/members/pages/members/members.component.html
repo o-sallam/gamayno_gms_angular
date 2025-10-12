@@ -1,43 +1,54 @@
-<div class="p-2">
-  <header class="flex justify-end mb-4">
-    <app-button (onClick)="openDialog('add')">
-      <i class="icon icon-user-tie"></i>
-      <span>Add Member</span></app-button
-    >
-  </header>
-  <section>
-    <app-table
-      [columns]="columns"
-      [data]="data"
-      [totalRecords]="1000"
-      (fetch)="fetch($event)"
-      (delete)="openDialog('delete', $event)"
-      (update)="openDialog('update', $event)"
-      (details)="openDialog('details', $event)"
-      [hasDelete]="true"
-      [hasUpdate]="true"
-      [hasDetails]="true"
-    >
-      <!-- Custom cell for "subscription" -->
-      <ng-template cellTemplate="subscription" let-value let-row="row">
-        <td>
-          <!-- 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' -->
-          <p-tag
-            [value]="value"
-            [severity]="value === 'active' ? 'success' : 'danger'"
-          ></p-tag>
-        </td>
-      </ng-template>
-      <!-- Custom cell for "actions" -->
-      <!-- <ng-template cellTemplate="actions" let-row>
+<header class="flex justify-between items-center mb-6">
+  <h2 class="text-2xl font-semibold text-white">Members</h2>
+  <img
+    src="assets/icons/add-user.svg"
+    alt="Add Member"
+    title="Add Member"
+    width="24"
+    height="24"
+    (click)="openAddRowDialog()"
+    class="cursor-pointer"
+  />
+</header>
+<section>
+  <app-table
+    [columns]="columns"
+    [data]="data"
+    [totalRecords]="1000"
+    (fetch)="fetch($event)"
+    (delete)="openDeleteDialog($event)"
+    (details)="navigateToDetails($event)"
+    [hasDelete]="true"
+    [hasUpdate]="true"
+    [hasDetails]="true"
+  >
+    <!-- Custom cell for "subscription" -->
+    <ng-template cellTemplate="subscription" let-value let-row="row">
+      <td>
+        <!-- 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' -->
+        <p-tag
+          [value]="value"
+          [severity]="value === 'active' ? 'success' : 'danger'"
+        ></p-tag>
+      </td>
+    </ng-template>
+    <!-- Custom cell for "actions" -->
+    <!-- <ng-template cellTemplate="actions" let-row>
         <td>
          
         </td>
       </ng-template> -->
-    </app-table>
-  </section>
-</div>
-<app-add-update-delete-members-dialog
-  [dialogConfig]="dialogConfig()"
-  (confirmDialogChange)="handleConfirmDialog($event)"
-></app-add-update-delete-members-dialog>
+  </app-table>
+</section>
+<app-add-member-dialog
+  [dialogVisible]="addRowDialogVisible()"
+  (primaryClick)="addRow($event)"
+  (close)="colseAddRowDialog()"
+>
+</app-add-member-dialog>
+<app-delete-members-dialog
+  [dialogVisible]="deleteDialogVisible()"
+  [data]="selectedRow()"
+  (primaryClick)="deleteRow($event)"
+  (close)="colseDeleteDialog()"
+></app-delete-members-dialog>

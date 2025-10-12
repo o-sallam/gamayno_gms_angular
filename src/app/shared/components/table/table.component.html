@@ -80,23 +80,38 @@
   @if (hasDelete() || hasUpdate() || hasDetails()) {
   <td class="flex gap-2">
     @if (hasDetails()) {
-    <i
-      (click)="onDetails(value)"
-      class="icon icon-user-tie cursor-pointer text-2xl hover:text-[var(--primary-color)] duration-300 ease-in-out"
+    <img
+      src="assets/icons/info.svg"
+      alt="View Details"
       title="View Details"
-    ></i>
+      width="24"
+      height="24"
+      (click)="onDetails(value)"
+      class="cursor-pointer"
+    />
+
     } @if (hasUpdate()) {
-    <i
+
+    <img
+      src="assets/icons/edit.svg"
+      alt="Update Member"
+      title="Update Member"
+      width="24"
+      height="24"
       (click)="onUpdate(value)"
-      class="icon icon-user-tie cursor-pointer text-2xl hover:text-[var(--primary-color)] duration-300 ease-in-out"
-      title="Edit"
-    ></i>
+      class="cursor-pointer bg"
+    />
     } @if (hasDelete()) {
-    <i
+
+    <img
+      src="assets/icons/delete.svg"
+      alt="Delete Member"
+      title="Delete Member"
+      width="24"
+      height="24"
       (click)="onDelete(value)"
-      class="icon icon-user-tie cursor-pointer text-2xl hover:text-[var(--primary-color)] duration-300 ease-in-out"
-      title="Delete"
-    ></i>
+      class="cursor-pointer"
+    />
     }
   </td>
   }
