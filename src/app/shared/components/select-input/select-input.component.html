@@ -1,0 +1,25 @@
+<div class="custom-select">
+  @if (label()) {
+  <label class="block text-sm font-medium text-gray-500 mb-1">
+    {{ label() }}
+  </label>
+  }
+
+  <p-select
+    [options]="options()"
+    [optionLabel]="optionLabel()"
+    [optionValue]="optionValue()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    class="w-full min-w-[170px]"
+    (onChange)="onSelect($event.value)"
+    (ngModelChange)="onSelect($event.value)"
+    (onBlur)="onBlur()"
+    [ngModel]="value()"
+    appendTo="body"
+  ></p-select>
+
+  @if (control?.invalid && (control?.touched || control?.dirty)) {
+  <div class="p-error text-sm mt-1">{{ errorMessage() }}</div>
+  }
+</div>

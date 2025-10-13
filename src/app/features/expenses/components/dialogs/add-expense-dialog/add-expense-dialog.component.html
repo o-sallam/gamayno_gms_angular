@@ -1,0 +1,27 @@
+<app-dialog
+  [title]="'Add Expense'"
+  [visible]="visible()"
+  (visibleChange)="onClose()"
+  [hasButtons]="true"
+  (primaryClick)="onSubmit()"
+  (close)="onClose()"
+>
+  <form [formGroup]="form" class="flex flex-col gap-3">
+    <app-date-input [label]="'Date'" formControlName="date"></app-date-input>
+    <app-select-input
+      [label]="'Category'"
+      formControlName="category"
+      [options]="categories"
+    ></app-select-input>
+    <app-text-input
+      [label]="'amount'"
+      [type]="'number'"
+      formControlName="amount"
+    ></app-text-input>
+    <app-text-input
+      [label]="'Description'"
+      [type]="'text'"
+      formControlName="description"
+    ></app-text-input>
+  </form>
+</app-dialog>

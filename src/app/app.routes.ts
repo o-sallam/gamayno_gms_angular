@@ -16,6 +16,13 @@ export const routes: Routes = [
       ).then((m) => m.MembersDetailsComponent),
   },
   {
+    path: 'expenses',
+    loadComponent: () =>
+      import('./features/expenses/pages/expenses/expenses.component').then(
+        (m) => m.ExpensesComponent
+      ),
+  },
+  {
     path: '',
     redirectTo: '/members',
     pathMatch: 'full',

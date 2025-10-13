@@ -17,7 +17,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TagModule } from 'primeng/tag';
 import { CellTemplateDirective } from '../../../../shared/directives/cell-template.directive';
 import { Member } from '../../models/member.model';
-import { DialogConfirm } from '../../../../core/models/dialog-models';
 import { DeleteMembersDialogComponent } from '../../components/dialogs/delete-members-dialog/delete-members-dialog.component';
 import { AddMemberDialogComponent } from '../../components/dialogs/add-member-dialog/add-member-dialog.component';
 type RowData = Member;
@@ -82,13 +81,7 @@ export class Members implements OnInit {
   navigateToDetails(member: RowData) {
     this.router.navigate(['/members', member.id]);
   }
-  handleConfirmDialog(dialogConfirm: DialogConfirm<PartialRowData>) {
-    switch (dialogConfirm.mode) {
-      case 'add':
-        this.addRow(dialogConfirm.data);
-        break;
-    }
-  }
+
   addRow(data: PartialRowData) {
     this.membersService
       .create(data)
