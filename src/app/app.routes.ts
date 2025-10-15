@@ -23,6 +23,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'revenues',
+    loadComponent: () =>
+      import('./features/revenues/pages/revenues/revenues.component').then(
+        (m) => m.RevenuesComponent
+      ),
+  },
+  {
     path: '',
     redirectTo: '/members',
     pathMatch: 'full',

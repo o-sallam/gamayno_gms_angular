@@ -54,6 +54,7 @@ export class SidebarComponent {
     { label: 'Dashboard', icon: 'assets/icons/dashboard.svg', route: '/' },
     { label: 'Members', icon: 'assets/icons/users.svg', route: '/members' },
     { label: 'Expenses', icon: 'assets/icons/expenses.svg', route: '/expenses' },
-    { label: 'Cash', icon: 'assets/icons/money.svg', route: '/cash' },
+    { label: 'Revenues', icon: 'assets/icons/money.svg', route: '/revenues' },
+    { label: 'Transactions', icon: 'assets/icons/money.svg', route: '/transactions' },
   ];
 }

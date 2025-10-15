@@ -1,20 +1,20 @@
 import { Injectable, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { Expense } from '../models/expense.model';
+import { Observable } from 'rxjs';
+import { Revenue } from '../models/revenue.model';
 import { TableFilterBody } from '../../../shared/components/table/table.component';
 import { ApiState, ApiResponse } from '../../../core/models/http-models';
 import { HttpService } from '../../../core/services/http.service';
 import { ParamatersParser } from '../../../core/config/paramaters-parser';
 
-type RowData = Expense;
-type PartialRowData = Partial<Expense>;
+type RowData = Revenue;
+type PartialRowData = Partial<Revenue>;
 
 @Injectable({
   providedIn: 'root',
 })
-export class ExpensesService {
-  private apiUrl = 'expenses';
-  expensesState = signal<ApiState<ApiResponse<RowData[]>>>({
+export class RevenuesService {
+  private apiUrl = 'revenues';
+  revenuesState = signal<ApiState<ApiResponse<RowData[]>>>({
     response: null,
     loading: false,
     error: null,
@@ -27,15 +27,15 @@ export class ExpensesService {
 
     return this.http.get<ApiResponse<RowData[]>>(
       this.apiUrl,
-      this.expensesState(),
+      this.revenuesState(),
       {
         params,
       }
     );
   }
 
-  create(expense: PartialRowData): Observable<ApiResponse<RowData>> {
-    return this.http.post<{ data: RowData }>(`${this.apiUrl}`, expense);
+  create(revenue: PartialRowData): Observable<ApiResponse<RowData>> {
+    return this.http.post<{ data: RowData }>(`${this.apiUrl}`, revenue);
   }
 
   delete(id: number): Observable<void> {
