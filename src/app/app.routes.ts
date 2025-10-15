@@ -30,6 +30,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'transactions',
+    loadComponent: () =>
+      import(
+        './features/transactions/pages/transactions/transactions.component'
+      ).then((m) => m.TransactionsComponent),
+  },
+  {
     path: '',
     redirectTo: '/members',
     pathMatch: 'full',
