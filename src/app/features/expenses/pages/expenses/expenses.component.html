@@ -1,0 +1,44 @@
+<header class="flex justify-between items-center mb-6">
+  <h2 class="text-2xl font-semibold text-white">Expenses</h2>
+  <img
+    src="assets/icons/add.svg"
+    alt="Add Expense"
+    title="Add Expense"
+    width="24"
+    height="24"
+    (click)="openAddRowDialog()"
+    class="cursor-pointer"
+  />
+</header>
+
+<app-table
+  [columns]="columns"
+  [data]="data"
+  [totalRecords]="1000"
+  (fetch)="fetch($event)"
+  (delete)="openDeleteDialog($event)"
+  [hasDelete]="true"
+  [hasUpdate]="false"
+  [hasDetails]="false"
+>
+  <!-- Date Template -->
+  <ng-template cellTemplate="date" let-value>
+    <td>
+      <span>{{ value | date : "mediumDate" }}</span>
+    </td>
+  </ng-template>
+</app-table>
+
+<!-- Add Dialog -->
+<app-add-expense-dialog
+  [visible]="addRowDialogVisible()"
+  (close)="closeAddRowDialog()"
+  (primaryClick)="addRow($event)"
+></app-add-expense-dialog>
+<!-- delete dialog -->
+<app-delete-expense-dialog
+  [visible]="deleteDialogVisible()"
+  [expense]="selectedRow()"
+  (close)="closeDeleteDialog()"
+  (primaryClick)="deleteRow($event)"
+></app-delete-expense-dialog>

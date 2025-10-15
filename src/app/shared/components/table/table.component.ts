@@ -175,6 +175,7 @@ export class TableComponent<T> implements AfterContentInit {
       // prevent triggering on first load (first rendering)
       return;
     }
+    
     this.fetchMore(event);
   }
   emitData() {

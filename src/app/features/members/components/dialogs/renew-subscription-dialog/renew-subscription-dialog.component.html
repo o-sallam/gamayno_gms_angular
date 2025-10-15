@@ -1,0 +1,60 @@
+<app-dialog
+  [visible]="dialogVisible()"
+  title="Renew Subscription"
+  primaryLabel="Renew"
+  secondaryLabel="Cancel"
+  (primaryClick)="onSubmit()"
+  (close)="onClose()"
+>
+  <form [formGroup]="renewForm" class="space-y-4">
+    <div class="flex gap-2">
+      <app-text-input
+        [label]="'Subscription fee'"
+        formControlName="subscriptionFee"
+        (onInputChange)="setTotalSubscriptionFee()"
+        [type]="'number'"
+        [min]="0"
+      ></app-text-input>
+      <app-text-input
+        [label]="'Month count'"
+        formControlName="monthCount"
+        (onInputChange)="setSubscriptionData()"
+        [type]="'number'"
+        [min]="1"
+        [max]="12"
+      ></app-text-input>
+    </div>
+    <app-details-field
+      [label]="'Total subscription fee'"
+      [value]="totalSubscriptionFee()"
+      [type]="'text'"
+    ></app-details-field>
+    <div class="flex gap-2">
+      <app-date-input
+        [label]="'Subscription start date'"
+        formControlName="startDate"
+        (valueChange)="setSubscriptionEndDate($event)"
+      ></app-date-input>
+      <app-date-input
+        [label]="'Subscription end date'"
+        formControlName="endDate"
+        [disabled]="true"
+      ></app-date-input>
+    </div>
+
+    <div class="flex gap-2 items-center">
+      <app-text-input
+        [label]="'Paid fee'"
+        formControlName="paidFee"
+        [type]="'number'"
+        (onInputChange)="setPaidFee()"
+        [min]="0"
+      ></app-text-input>
+      <app-details-field
+        [label]="'Left to pay'"
+        [value]="leftToPay()"
+        [type]="'text'"
+      ></app-details-field>
+    </div>
+  </form>
+</app-dialog>

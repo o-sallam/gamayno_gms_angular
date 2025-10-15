@@ -1,0 +1,24 @@
+<div class="custom-input">
+  @if (label()) {
+  <label class="block text-sm font-medium text-gray-500 mb-1">
+    {{ label() }}
+  </label>
+  }
+
+  <p-datepicker
+    [appendTo]="'body'"
+    [showIcon]="showIcon()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [ngModel]="value()"
+    (ngModelChange)="onSelect($event)"
+    (onBlur)="onBlur()"
+    [dateFormat]="dateFormat()"
+    [inputStyleClass]="inputClass()"
+    class="w-full"
+  />
+
+  @if (control?.invalid && (control?.touched || control?.dirty)) {
+  <div class="p-error">{{ errorMessage() }}</div>
+  }
+</div>

@@ -1,0 +1,51 @@
+<app-dialog
+  [visible]="dialogVisible()"
+  title="Add Deposit"
+  primaryLabel="Add Deposit"
+  secondaryLabel="Cancel"
+  (primaryClick)="onSubmit()"
+  (close)="onClose()"
+>
+  <form [formGroup]="depositForm" class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-text-input
+        label="Deposit Amount"
+        formControlName="amount"
+        type="number"
+        [required]="true"
+        placeholder="Enter deposit amount"
+      ></app-text-input>
+
+      <app-date-input
+        label="Deposit Date"
+        formControlName="depositDate"
+        [required]="true"
+      ></app-date-input>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4">
+      <app-text-input
+        label="Description"
+        formControlName="description"
+        type="text"
+        placeholder="Enter deposit description (optional)"
+      ></app-text-input>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-text-input
+        label="Payment Method"
+        formControlName="paymentMethod"
+        type="text"
+        placeholder="Cash, Card, Bank Transfer, etc."
+      ></app-text-input>
+
+      <app-text-input
+        label="Reference Number"
+        formControlName="referenceNumber"
+        type="text"
+        placeholder="Transaction reference (optional)"
+      ></app-text-input>
+    </div>
+  </form>
+</app-dialog>

@@ -5,29 +5,37 @@ import {
   signal,
   Optional,
   Self,
+  computed,
+  output,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   NgControl,
 } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-text-input',
   templateUrl: './text-input.component.html',
   styleUrls: ['./text-input.component.scss'],
+  standalone: true,
   imports: [InputTextModule],
 })
 export class TextInputComponent implements ControlValueAccessor {
   label = input<string>('');
   placeholder = input<string>('');
-  type = input<'text' | 'password' | 'email'>('text');
+  type = input<'text' | 'password' | 'email' | 'number'>('text');
   disabled = input<boolean>(false);
+  min = input<number | null>(null);
+  max = input<number | null>(null);
   // expose a class input so parent can forward classes
   inputClass = input<string>('');
 
   value = signal<string>('');
+  onInputChange = output<string>();
 
   // ControlValueAccessor callbacks
   private _onChange: (v: any) => void = () => {};
@@ -69,7 +77,8 @@ export class TextInputComponent implements ControlValueAccessor {
   // local handler when user types
   onInput(value: string) {
     this.value.set(value);
-    this._onChange(value); // propagate to form
+    this._onChange(value);
+    this.onInputChange.emit(value);
   }
 
   // on blur (mark touched)
@@ -81,10 +90,16 @@ export class TextInputComponent implements ControlValueAccessor {
   get control() {
     return this.ngControl?.control;
   }
+  status = toSignal(this.control?.statusChanges ?? EMPTY, {
+    initialValue: this.control?.status ?? 'VALID',
+  });
+  errorMessage = computed(() => {
+    this.status(); // 👈 dependency for reactivity
 
-  getErrorMessage(): string | null {
     const c = this.control;
+    c?.status;
     if (!c || !c.errors) return null;
+
     if (c.errors['required']) return 'This field is required';
     if (c.errors['minlength']) {
       const req = c.errors['minlength'].requiredLength;
@@ -95,7 +110,6 @@ export class TextInputComponent implements ControlValueAccessor {
       return `Maximum ${max} characters allowed`;
     }
     if (c.errors['pattern']) return 'Invalid format';
-    // add more mappings as needed
     return 'Invalid';
-  }
+  });
 }

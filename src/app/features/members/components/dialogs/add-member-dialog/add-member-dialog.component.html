@@ -1,0 +1,71 @@
+<app-dialog
+  [title]="'Add Member'"
+  [visible]="dialogVisible()"
+  [hasButtons]="true"
+  (primaryClick)="confirmDialog()"
+  (close)="closeDialog()"
+>
+  <form [formGroup]="form" class="flex flex-col gap-3">
+    <app-text-input [label]="'Name'" formControlName="name"></app-text-input>
+    <div class="flex gap-2">
+      <app-text-input
+        [label]="'Subscription fee'"
+        formControlName="subscriptionFee"
+        (onInputChange)="setTotalSubscriptionFee()"
+        [type]="'number'"
+        [min]="0"
+      ></app-text-input>
+      <app-text-input
+        [label]="'Month count'"
+        formControlName="subscriptionmonthCount"
+        (onInputChange)="setSubscriptionData()"
+        [type]="'number'"
+        [min]="1"
+        [max]="12"
+      ></app-text-input>
+    </div>
+    <app-details-field
+      [label]="'Total subscription fee'"
+      [value]="totalSubscriptionFee()"
+      [type]="'text'"
+    ></app-details-field>
+    <div class="flex gap-2">
+      <app-date-input
+        [label]="'Subscription start date'"
+        formControlName="subscriptionStartDate"
+        (valueChange)="setSubscriptionEndDate($event)"
+      ></app-date-input>
+      <app-date-input
+        [label]="'Subscription end date'"
+        formControlName="subscriptionEndDate"
+        [disabled]="true"
+      ></app-date-input>
+    </div>
+
+    <div class="flex gap-2 items-center">
+      <app-text-input
+        [label]="'Paid fee'"
+        formControlName="paidFee"
+        [type]="'number'"
+        (onInputChange)="setPaidFee()"
+        [min]="0"
+      ></app-text-input>
+      <app-details-field
+        [label]="'Left to pay'"
+        [value]="leftToPay()"
+        [type]="'text'"
+      ></app-details-field>
+    </div>
+    <div>
+      <app-dialog-section [title]="'Additional Info'"></app-dialog-section>
+      <app-text-input
+        [label]="'Phone'"
+        formControlName="phone"
+      ></app-text-input>
+      <app-text-input
+        [label]="'Address'"
+        formControlName="address"
+      ></app-text-input>
+    </div>
+  </form>
+</app-dialog>
